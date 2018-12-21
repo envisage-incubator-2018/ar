@@ -7,11 +7,10 @@ let players = {};   // Stores the cubes of each player
 
 function initGame() {
 
-  // Create socket connected to node server seperate from file server
+  // Create socket connected to node server hosted seperately from file server
   let serverIp = window.location.origin.split(":")[0] + ":" + window.location.origin.split(":")[1] + ":3000";
-  socket = io.connect(serverIp);  // could use something like window.location.origin to dynamically set connection point
+  socket = io.connect(serverIp);
 
-  //socket = io.connect('http://120.153.145.248:3000');
 
   socket.on('connect', function() {
     console.log("Connected to server with id", socket.id);
@@ -31,6 +30,7 @@ function initGame() {
     var material = new THREE.MeshNormalMaterial();
     players[data] = new THREE.Mesh(geometry, material);
     players[data].position.set(0, 0, 0);
+    players[data].rotation.set(0, 0, 0);
     scene.add(players[data]);
   });
 
@@ -48,29 +48,38 @@ function initGame() {
     //console.log("scene", scene)
 
     console.log("Received init world state", data);
-    //for (var i in data) {
-    //  console.log(i, data[i])
-    //}
 
     // Store world state and get user position
+
+
+    //players[socket.id].position.set(camera.position.x, camera.position.y, camera.position.z);
+    //players[socket.id].rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+
 
     // Add each player cube to players
     for (var id in data) {
       var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
       var material = new THREE.MeshNormalMaterial();
       players[id] = new THREE.Mesh(geometry, material);
-      players[id].position.set(data[id].x, data[id].y, data[id].z);
+      players[id].position.set(data[id].position.x, data[id].position.y, data[id].position.z);
+      players[id].rotation.set(data[id].rotation.x, data[id].rotation.y, data[id].rotation.z);
       scene.add(players[id]);
     }
 
     // Set users position to where server thinks they are
     camera.position.set(players[socket.id].position.x, players[socket.id].position.y, players[socket.id].position.z);
+    camera.rotation.set(players[socket.id].rotation.x, players[socket.id].rotation.y, players[socket.id].rotation.z);
 
 
     // Now that user has world state, user begins updating 
     // its own game state and sending it to server at a set tick rate
     setInterval(function() {
-      socket.emit("update-position", camera.position);
+      let userState = {
+        "position": camera.position,
+        "rotation": {x:camera.rotation.x, y:camera.rotation.y, z:camera.rotation.z}
+      }
+      //console.log(userState)
+      socket.emit("update-state", userState);
     }, 1000/30);
 
 
@@ -78,13 +87,15 @@ function initGame() {
     // Recieves world state from server at a set tick rate and updates local version accordingly
     socket.on('update-world-state', function(data) {
 
-      // Add each player cube to players
+      // Update each player cube from server data
       for (var id in players) {
-        players[id].position.set(data[id].x, data[id].y, data[id].z);
+        players[id].position.set(data[id].position.x, data[id].position.y, data[id].position.z);
+        players[id].rotation.set(data[id].rotation.x, data[id].rotation.y, data[id].rotation.z);
       }
 
-      // Player uses local version of its position (it really shouldn't but it does for now)
+      // Player uses local version of its state (it really shouldn't but it does for now)
       players[socket.id].position.set(camera.position.x, camera.position.y, camera.position.z);
+      players[socket.id].rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
 
     });
 
@@ -125,10 +136,7 @@ function updateGame(delta) {
 
   //console.log(delta)
   
-  
-  //cube2.position.set(camera.position.x, camera.position.y, camera.position.z);
-
-
+  //players[socket.id].rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
 
 }
 
@@ -136,13 +144,7 @@ function updateGame(delta) {
 
 
 
-
-
-
-
-
-
-keyDown = {};
+let keyDown = {};
 
 // Keys
 document.addEventListener("keydown", function(evt) {

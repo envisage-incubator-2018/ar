@@ -10,6 +10,10 @@
 // Players are stored as: {id:{}, id:{}}
 let players = {};
 
+setInterval(function() {
+	console.log(players);
+}, 1000);
+
 
 // Listen on port 3000 
 let io = require('socket.io').listen(3000);
@@ -27,7 +31,10 @@ io.sockets.on('connection', function (socket) {
 
 
 	// Create players position in world state
-	players[socket.id] = {x:0, y:0, z:0};	
+	players[socket.id] = {
+        "position": {x:0, y:0, z:0},
+        "rotation": {x:0, y:0, z:0}
+    };
 
 	// Send world state to new player to allow them to start updating their own position
 	socket.emit('init-world-state', players);
@@ -38,8 +45,8 @@ io.sockets.on('connection', function (socket) {
 	}, 1000/30);
 
 
-	// Wait for client to send its new position
-	socket.on('update-position', function (data) {
+	// Wait for client to send their own state
+	socket.on('update-state', function (data) {
 		players[socket.id] = data;
 	});
 
@@ -59,5 +66,8 @@ io.sockets.on('connection', function (socket) {
 	});
 
 
+
+
 });
+
 
