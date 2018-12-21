@@ -8,7 +8,10 @@ let players = {};   // Stores the cubes of each player
 function initGame() {
 
   // Create socket connected to node server seperate from file server
-  socket = io.connect('http://120.153.145.248:3000');
+  let serverIp = window.location.origin.split(":")[0] + ":" + window.location.origin.split(":")[1] + ":3000";
+  socket = io.connect(serverIp);  // could use something like window.location.origin to dynamically set connection point
+
+  //socket = io.connect('http://120.153.145.248:3000');
 
   socket.on('connect', function() {
     console.log("Connected to server with id", socket.id);
@@ -42,12 +45,12 @@ function initGame() {
 
   // Recieves world state from server in response to the "new player" socket
   socket.on('init-world-state', function(data) {
-    console.log("scene", scene)
+    //console.log("scene", scene)
 
     console.log("Received init world state", data);
-    for (var i in data) {
-      console.log(i, data[i])
-    }
+    //for (var i in data) {
+    //  console.log(i, data[i])
+    //}
 
     // Store world state and get user position
 
@@ -124,6 +127,8 @@ function updateGame(delta) {
   
   
   //cube2.position.set(camera.position.x, camera.position.y, camera.position.z);
+
+
 
 }
 
