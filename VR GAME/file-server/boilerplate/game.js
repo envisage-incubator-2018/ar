@@ -146,6 +146,12 @@ function updateGame(delta) {
     if (keyDown["KeyD"]) {
         camera.translateX( delta * 0.001 );
     }
+    if (keyDown["KeyE"]) {
+        camera.rotateY( delta * -0.001 );
+    }
+    if (keyDown["KeyQ"]) {
+        camera.rotateY ( delta * 0.001 );
+    }
   }
   if (keyDown["Space"]) {
     camera.translateY( delta * 0.001 );
