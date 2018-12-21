@@ -12,7 +12,7 @@ let players = {};
 
 
 // Listen on port 3000 
-var io = require('socket.io').listen(3000);
+let io = require('socket.io').listen(3000);
 io.set("heartbeat interval", 1000);
 
 console.log("Starting server");
@@ -44,12 +44,6 @@ io.sockets.on('connection', function (socket) {
 	});
 
 
-
-	// Wait for client to send ping with a timestamp, and return the ping back to the client
-	socket.on('pingSend', function (timestamp) {
-		//console.log("Ping from " + socket.id + " at " + timestamp);
-		socket.emit('pingRecieve', timestamp);
-	});
 
 
 

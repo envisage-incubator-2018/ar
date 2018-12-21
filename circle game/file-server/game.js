@@ -14,8 +14,10 @@
 let messages = document.getElementById('messages');
 
 // Connect to our server.js, which is listening on port 3000
-let socket = io.connect('http://120.153.145.248:3000');
-//var socket = io.connect('http://localhost:3000');	// could use something like window.location.origin to dynamically set connection point
+//let socket = io.connect('http://120.153.145.248:3000');
+let serverIp = window.location.origin.split(":")[0] + ":" + window.location.origin.split(":")[1] + ":3000";
+console.log(serverIp)
+var socket = io.connect(serverIp);	// could use something like window.location.origin to dynamically set connection point
 
 
 
@@ -24,7 +26,7 @@ let socket = io.connect('http://120.153.145.248:3000');
 keyDown = {};
 
 // Keys
-document.addEventListener("keydown", function(evt) {
+document.addEventListener("keydown", function(evt) {    
   keyDown[evt.code] = true;
   if (evt.code == "Space") {	// Stops space from scrolling
     evt.preventDefault();
@@ -48,7 +50,6 @@ socket.on('connect', function() {
 	console.log("Connected to server with id", socket.id);
 
 });
-
 
 
 
