@@ -115,11 +115,26 @@ function updateGame(delta) {
 
   //cube.position.z += delta * 100;
 
-  if (Math.abs(gamepad.axes[joysticks['LeftVertical']])) {
-    camera.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
-  }
-  if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']])) {
-    camera.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
+  if (gamepad != undefined) {
+    if (Math.abs(gamepad.axes[joysticks['LeftVertical']])) {
+        camera.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
+    }
+    if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']])) {
+        camera.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
+    }
+  } else {
+    if (keyDown["KeyW"]) {
+        camera.translateZ( delta * -0.001 );
+    }
+    if (keyDown["KeyS"]) {
+        camera.translateZ( delta * 0.001 );
+    }  
+    if (keyDown["KeyA"]) {
+        camera.translateX( delta * -0.001 );
+    }  
+    if (keyDown["KeyD"]) {
+        camera.translateX( delta * 0.001 );
+    }
   }
   if (keyDown["Space"]) {
     camera.translateY( delta * 0.001 );
@@ -129,10 +144,10 @@ function updateGame(delta) {
   }
 
   
-  
-  camera.rotation.y += gamepad.axes[joysticks['RightHorizontal']] * 0.0001;
-  camera.rotation.x += gamepad.axes[joysticks['RightVertical']] * 0.0001;
-  
+  if (gamepad != undefined) {
+    camera.rotation.y += gamepad.axes[joysticks['RightHorizontal']] * -0.05;
+    camera.rotation.x += gamepad.axes[joysticks['RightVertical']] * -0.05;
+  }
   //console.log(delta)
   
   
@@ -166,3 +181,5 @@ document.addEventListener("keydown", function(evt) {
 document.addEventListener("keyup", function(evt) {
   keyDown[evt.code] = false;
 });
+
+window.addEventListener("gamepadconnected", initGamepad);
