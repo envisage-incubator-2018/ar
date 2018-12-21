@@ -3,7 +3,18 @@
 
 let socket;
 let players = {};   // Stores the cubes of each player
+let gamepad;
 
+let joysticks = {
+    "LeftHorizontal" : 0,
+    "LeftVertical" : 1,
+    "RightHorizontal" : 2,
+    "RightVertical" : 3
+}
+
+function initGamepad(evt) {
+    gamepad = evt.gamepad;
+}
 
 function initGame() {
 
@@ -101,17 +112,11 @@ function updateGame(delta) {
 
   //cube.position.z += delta * 100;
 
-  if (keyDown["KeyW"]) {
-    camera.translateZ( delta * -0.001 );
+  if (Math.abs(gamepad.axes[joysticks['LeftVertical']])) {
+    camera.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
   }
-  if (keyDown["KeyS"]) {
-    camera.translateZ( delta * 0.001 );
-  }  
-  if (keyDown["KeyA"]) {
-    camera.translateX( delta * -0.001 );
-  }  
-  if (keyDown["KeyD"]) {
-    camera.translateX( delta * 0.001 );
+  if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']])) {
+    camera.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
   }
   if (keyDown["Space"]) {
     camera.translateY( delta * 0.001 );
@@ -120,6 +125,11 @@ function updateGame(delta) {
     camera.translateY( delta * -0.001 );
   }
 
+  
+  
+  camera.rotation.y += gamepad.axes[joysticks['RightHorizontal']] * 0.0001;
+  camera.rotation.x += gamepad.axes[joysticks['RightVertical']] * 0.0001;
+  
   //console.log(delta)
   
   
