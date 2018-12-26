@@ -127,12 +127,24 @@ function updateGame(delta) {
   //cube.position.z += delta * 100;
 
   if (gamepad != undefined) {
-    if (Math.abs(gamepad.axes[joysticks['LeftVertical']])) {
+    if (Math.abs(gamepad.axes[joysticks['LeftVertical']]) > 0.05) {
         camera.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
     }
-    if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']])) {
+    if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']]) > 0.05) {
         camera.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
     }
+    if (Math.abs(gamepad.axes[joysticks["RightHorizontal"]]) > 0.05) {
+      // Copied from new version of Three.js
+      var q1 = new THREE.Quaternion();
+
+	  q1.setFromAxisAngle(new THREE.Vector3(0, 1, 0), gamepad.axes[joysticks['RightHorizontal']] * -0.05);
+      camera.quaternion.premultiply(q1);
+
+    }
+    if (Math.abs(gamepad.axes[joysticks["RightVertical"]]) > 0.05) {
+      camera.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);       
+    }
+    
   } else {
     if (keyDown["KeyW"]) {
         camera.translateZ( delta * -0.001 );
@@ -158,12 +170,6 @@ function updateGame(delta) {
   }  
   if (keyDown["ShiftLeft"]) {
     camera.translateY( delta * -0.001 );
-  }
-
-  
-  if (gamepad != undefined) {
-    camera.rotation.y += gamepad.axes[joysticks['RightHorizontal']] * -0.05;
-    camera.rotation.x += gamepad.axes[joysticks['RightVertical']] * -0.05;
   }
   //console.log(delta)
   
