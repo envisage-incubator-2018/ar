@@ -19,7 +19,8 @@ function initGamepad(evt) {
 function initGame() {
 
   // Create socket connected to node server hosted seperately from file server
-  let serverIp = window.location.origin.split(":")[0] + ":" + window.location.origin.split(":")[1] + ":3000";
+  let ip = window.location.origin;
+  let serverIp = ip.substring(0, ip.lastIndexOf(":")) + ":3000";
   socket = io.connect(serverIp);
 
 
