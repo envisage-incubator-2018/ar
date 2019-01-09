@@ -11,6 +11,8 @@
 let players = {};
 
 setInterval(function() {
+	console.log("Logging Time: " + (new Date().getTime()));
+	console.log("Players online: " + Object.keys(players).length);
 	console.log(players);
 }, 1000);
 
@@ -32,7 +34,7 @@ io.sockets.on('connection', function (socket) {
 
 	// Create players position in world state
 	players[socket.id] = {
-        "position": {x:0, y:0, z:0},
+        "position": {x:0, y:3, z:5},
         "rotation": {x:0, y:0, z:0}
     };
 
