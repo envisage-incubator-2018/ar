@@ -149,6 +149,8 @@ function loadRoom1(){
 
   camera.position.z = 5;
   camera.position.y = 3;
+  //player.position.z = 5;
+  //player.position.y = 3;
   
 }
 

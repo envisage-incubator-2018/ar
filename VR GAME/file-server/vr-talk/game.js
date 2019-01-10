@@ -18,6 +18,7 @@ function initGame() {
   // Create socket connected to node server hosted seperately from file server
   let ip = window.location.origin;
   let serverIp = ip.substring(0, ip.lastIndexOf(":")) + ":3000";
+  console.log("Connecting to game server:", serverIp)
   socket = io.connect(serverIp);
 
 
@@ -122,6 +123,8 @@ function updateGame(delta) {
   let movementSpeed = 0.003;
   let rotationSpeed = 0.001;
 
+  //camera.translateZ( delta * -0.001 );
+  //camera.rotateY ( delta * 0.0001 )
 
   if (gamepad != undefined) {
     if (Math.abs(gamepad.axes[joysticks['LeftVertical']]) > 0.05) {
