@@ -128,6 +128,7 @@ function animate(timestamp) {
     //animateRoom2();
   }
 
+
   // Only update controls (looking around and stuff) if VRDisplay is presenting.
   if (vrButton.isPresenting()) {
     controls.update();

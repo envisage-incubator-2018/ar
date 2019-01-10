@@ -124,7 +124,7 @@ function updateGame(delta) {
   let rotationSpeed = 0.001;
 
   //camera.translateZ( delta * -0.001 );
-  //camera.rotateY ( delta * 0.0001 )
+  camera.rotateY ( delta * 0.0001 )
 
   if (gamepad != undefined) {
     if (Math.abs(gamepad.axes[joysticks['LeftVertical']]) > 0.05) {
