@@ -41,8 +41,8 @@ function initVR() {
   var listener = new THREE.AudioListener();
   camera.add(listener);
 
-  fakeCamera = new THREE.Object3D();
-  controls = new THREE.VRControls(fakeCamera);
+  //fakeCamera = new THREE.Object3D();
+  controls = new THREE.VRControls(camera);
   controls.standing = true;
   //camera.position.y = controls.userHeight;
 
@@ -135,17 +135,17 @@ function animate(timestamp) {
   }
   
   // Temporarily save the camera rotation
-  var camRot = camera.quaternion.clone();
+  //var camRot = camera.quaternion.clone();
   
   // Apply the VR camera rotation
   // on top of the actual camera.
-  camera.quaternion.multiply(fakeCamera.quaternion);
+  //camera.quaternion.multiply(fakeCamera.quaternion);
 
   // Render the scene.
   effect.render(scene, camera);
   
   // Revert the rotation
-  camera.quaternion.copy(camRot);
+  //camera.quaternion.copy(camRot);
 
   vrDisplay.requestAnimationFrame(animate);
 }
