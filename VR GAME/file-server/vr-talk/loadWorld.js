@@ -171,7 +171,7 @@ function loadRoom1(){
 
 
   var directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
-  lightPos =   new THREE.Vector3(-20,5,20)
+  lightPos =   new THREE.Vector3(-40,20,20)
   directionalLight.position.copy( lightPos)
   scene.add( directionalLight );
   //directionalLight.target = cube
