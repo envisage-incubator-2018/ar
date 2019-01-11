@@ -2,7 +2,7 @@
   Handles loading the three.js world
 */
 
-var chosenRoom = 3;
+var chosenRoom = 1;
 
 // A temporary fix to halt rendering until all resources have been loaded
 var resourcesToLoad;  // Number of unloaded resources in room (decrements when each resources loads)
@@ -98,6 +98,7 @@ function loadRoom1(){
 				.setPath('mod/')
 				.load('cabin.obj', function ( object) {
 					object.position.y = 0
+          object.position.x =-10
 					//cabinRef = object
 					scene.add (object)
 
