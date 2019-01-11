@@ -11,6 +11,7 @@ var scene;
 var controls;
 var effect;
 var camera;
+var fakeCamera;
 var player;
 
 // EnterVRButton for rendering enter/exit UI.
@@ -32,7 +33,6 @@ function initVR() {
   // Player holds camera AND cube
   //player = new THREE.Group();
 
-
   // Create a three.js camera.
   var aspect = window.innerWidth / window.innerHeight;
   camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
@@ -41,13 +41,12 @@ function initVR() {
   var listener = new THREE.AudioListener();
   camera.add(listener);
 
-  controls = new THREE.VRControls(camera);
+  fakeCamera = new THREE.Object3D();
+  controls = new THREE.VRControls(fakeCamera);
   controls.standing = true;
   //camera.position.y = controls.userHeight;
 
-
   //player.add(camera);
-
 
   // Apply VR stereo rendering to renderer.
   effect = new THREE.VREffect(renderer);
@@ -134,8 +133,19 @@ function animate(timestamp) {
   if (vrButton.isPresenting()) {
     controls.update();
   }
+  
+  // Temporarily save the camera rotation
+  var camRot = camera.quaternion.clone();
+  
+  // Apply the VR camera rotation
+  // on top of the actual camera.
+  camera.quaternion.multiply(fakeCamera.quaternion);
+
   // Render the scene.
   effect.render(scene, camera);
+  
+  // Revert the rotation
+  camera.quaternion.copy(camRot);
 
   vrDisplay.requestAnimationFrame(animate);
 }
