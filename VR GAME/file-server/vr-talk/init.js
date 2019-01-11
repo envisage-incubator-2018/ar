@@ -36,13 +36,13 @@ function initVR() {
   // Create a three.js camera.
   var aspect = window.innerWidth / window.innerHeight;
   camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
-  
+
   // Add audio listener to the camera
   var listener = new THREE.AudioListener();
   camera.add(listener);
 
-  fakeCamera = new THREE.Object3D();
-  controls = new THREE.VRControls(fakeCamera);
+  //fakeCamera = new THREE.Object3D();
+  controls = new THREE.VRControls(camera);
   controls.standing = true;
   //camera.position.y = controls.userHeight;
 
@@ -79,11 +79,11 @@ function initVR() {
   });
 
 
-  /* 
+  /*
     The stuff below needs to be syncronized properly
     Should begin by spending time connecting to server (fetching positions of static and dynamic objects in the world)
     Only after this is complete should the required models/textures be loaded in
-    Once this is complete, the scene can begin rendering. 
+    Once this is complete, the scene can begin rendering.
     This will prevent errors of textures not being loaded while the game is trying to use them.
   */
 
@@ -124,7 +124,9 @@ function animate(timestamp) {
   if(chosenRoom== 1){
     animateRoom1();
   }else if(chosenRoom== 2){
-    //animateRoom2();
+    animateRoom2()
+  }else if(chosenRoom== 3){
+    animateRoom3()
   }
 
   // Only update controls (looking around and stuff) if VRDisplay is presenting.
@@ -133,20 +135,17 @@ function animate(timestamp) {
   }
   
   // Temporarily save the camera rotation
-  var camRot = camera.quaternion.clone();
+  //var camRot = camera.quaternion.clone();
   
   // Apply the VR camera rotation
   // on top of the actual camera.
-  camera.quaternion.multiply(fakeCamera.quaternion);
+  //camera.quaternion.multiply(fakeCamera.quaternion);
 
   // Render the scene.
   effect.render(scene, camera);
   
   // Revert the rotation
-  camera.quaternion.copy(camRot);
+  //camera.quaternion.copy(camRot);
 
   vrDisplay.requestAnimationFrame(animate);
 }
-
-
-
