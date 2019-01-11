@@ -98,7 +98,7 @@ function loadRoom1(){
 				.setPath('mod/')
 				.load('cabin.obj', function ( object) {
 					object.position.y = 0
-          object.position.x =-10
+          object.position.x =10
 					//cabinRef = object
 					scene.add (object)
 
@@ -171,7 +171,7 @@ function loadRoom1(){
 
 
   var directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
-  lightPos =   new THREE.Vector3(2,10,5)
+  lightPos =   new THREE.Vector3(-20,5,20)
   directionalLight.position.copy( lightPos)
   scene.add( directionalLight );
   //directionalLight.target = cube
