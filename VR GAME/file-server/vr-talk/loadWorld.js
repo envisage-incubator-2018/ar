@@ -177,8 +177,8 @@ function loadRoom1(){
   //directionalLight.target = cube
 
 
-  camera.position.z = 5;
-  camera.position.y = 3;
+  //camera.position.z = 5;
+  //camera.position.y = 3;
   //player.position.z = 5;
   //player.position.y = 3;
 
