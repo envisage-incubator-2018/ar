@@ -4,7 +4,7 @@
   Client attempts to connect to server
   Once connection is established, client waits until it recieves initial world state
 
-  Upon recieving initial world state, 
+  Upon recieving initial world state,
   - loop through each player and add to player list
   - if player is self, set self to current position and add to players list
 
@@ -81,7 +81,7 @@ function initGame() {
     }
 
 
-    // Now that user has world state, user begins updating 
+    // Now that user has world state, user begins updating
     // its own game state and sending it to server at a set tick rate
     setInterval(function() {
       let userState = selfPlayer.getState();

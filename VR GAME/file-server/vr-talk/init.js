@@ -16,8 +16,10 @@ var vrButton;
 // The player which represents the client themselves
 var selfPlayer;
 
+var chosenRoom;
 
-function initVR() {
+function initVR(tempRoom) {
+  chosenRoom = tempRoom
   // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
   // Only enable it if you actually need to.
   var renderer = new THREE.WebGLRenderer({antialias: true});

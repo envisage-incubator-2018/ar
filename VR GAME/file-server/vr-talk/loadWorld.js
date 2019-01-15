@@ -2,7 +2,6 @@
   Handles loading the three.js world
 */
 
-var chosenRoom = 1;
 
 // A temporary fix to halt rendering until all resources have been loaded
 var resourcesToLoad;  // Number of unloaded resources in room (decrements when each resources loads)
@@ -58,6 +57,8 @@ function loadWorld() {
 function resourceLoaded() {
   resourcesToLoad --;
   if (resourcesToLoad == 0) {
+    document.getElementById('roomCreate').style.display="None"
+
     beginAnimate();
   }
   console.log("Loaded resource", resourcesToLoad, "left");

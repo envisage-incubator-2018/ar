@@ -39,6 +39,11 @@
 </head>
 
 <body>
+  <div id='roomCreate'>
+    <button type="button" onClick="initVR(1)">Room 1</button>
+    <button type="button" onClick="initVR(2)">Room 2</button>
+    <button type="button" onClick="initVR(3)">Room 3</button>
+  </div>
   <div id="ui">
     <div id="vr-button"></div>
     <a id="magic-window" href="#">Try it without a headset</a>
@@ -117,6 +122,6 @@ WebVRConfig = {
 <script src="game.js"></script>
 <script src="playerClass.js"></script>
 
-<script>window.addEventListener('load', initVR);</script>
+<!--script>window.addEventListener('load', initVR);</script-->
 
 </html>
