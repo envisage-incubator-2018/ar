@@ -3,9 +3,9 @@
 	Matty public ip: http://120.153.145.248:8080/
 
 
-	
-	Array containing 
-	
+
+	Array containing
+
 
 	roomList = {
 		"room1": {
@@ -16,7 +16,7 @@
 				}
 			}
 			"objects": {
-				
+
 			}
 		}
 	}
@@ -61,7 +61,7 @@ setInterval(function() {
 }, 3000);
 
 
-// Listen on port 3000 
+// Listen on port 3000
 let io = require('socket.io').listen(3000);
 io.set("heartbeat interval", 1000);
 
@@ -96,17 +96,50 @@ io.sockets.on('connection', function (socket) {
 		// Wait for client to send their own state
 		socket.on('update-state', function (data) {
 
-			// Set players updated position in room 
+			// Set players updated position in room
 			let roomName = playerList[socket.id];
 			roomList[roomName]["players"][socket.id] = data;
 		});
 
-		
+		// RTC event handlers
+		socket.emit("rtc_connect");
+
+		socket.on("rtc_join", function(roomName) {
+			roomName = "room" + roomName;
+			if (roomList[roomName]["players"][socket.id]["connected"]) {
+				// Disconnect from the old channel
+				rtc_disconnect();
+			}
+
+			// Tell all of the other clients to open a connection to this client
+			io.to(roomName).emit("add_rtc_peer", {"id" : socket.id, "make_offer" : false});
+			// Tell this client to open WebRTC connections
+			for (id in roomList[roomName]["players"]) {
+				if (id != socket.id) {
+					socket.emit("add_rtc_peer", {"id" : id, "make_offer" : true});
+				}
+			}
+
+			roomList[roomName]["players"][socket.id]["connected"] = true;
+
+	  });
+
+		socket.on('relay_data', function(config) {
+      if (peer_id in roomList[roomName]["players"]) {
+					// TODO how to do this
+					io.to('${peer_id}').emit(config.ev, config);
+      }
+    });
+
+		socket.on("rtc_disconnect", rtc_disconnect);
 
 		// If client disconnects, remove them from room and tell other users
 		socket.on('disconnect', function () {
 			let roomName = playerList[socket.id];
 			console.log("Player " + socket.id + " disconnected from room " + roomName);
+
+			// Disconnect the RTC connection
+			rtc_disconnect();
 
 			// Remove player from room
 			delete roomList[roomName]["players"][socket.id];
@@ -118,15 +151,18 @@ io.sockets.on('connection', function (socket) {
 			socket.to(roomName).emit("user-disconnected", socket.id);
 		});
 
+		function rtc_disconnect() {
+			// Tell all of the other clients to close the connection to this client
+			io.to(roomName).emit("remove_rtc_peer", socket.id);
+			// Tell this client to close all WebRTC connections
+			socket.emit("rtc_disconnect");
+
+			roomList[roomName]["players"][socket.id]["connected"] = false;
+	  }
 
 	});
 
-
-
-
-
 });
-
 
 
 // Loop through each room and send all players in that room their room state at 60 ticks
