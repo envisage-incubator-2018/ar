@@ -27,7 +27,6 @@ let joysticks = {
     "RightVertical" : 3
 }
 
-
 function initGame() {
 
   // Create socket connected to node server hosted seperately from file server
@@ -39,6 +38,8 @@ function initGame() {
 
   socket.on('connect', function() {
     console.log("Connected to server with id", socket.id);
+
+    socket.emit("join-room", "room"+chosenRoom);
   });
 
   // Calculate player latency and displays it
@@ -69,14 +70,14 @@ function initGame() {
 
     // Store world state and get user position
 
-    // Add each player cube to players
-    for (let id in data) {
+    // Add each player class to players
+    for (let id in data.players) {
       if (id == socket.id) {  // Add selfPlayer to scene with the recieved state
         players[id] = selfPlayer;
-        selfPlayer.setState(data[id]);
+        selfPlayer.setState(data.players[id]);
       } else {  // Add other players to scene with their respective state
         players[id] = new Player();
-        players[id].setState(data[id]);
+        players[id].setState(data.players[id]);
       }
     }
 
@@ -86,15 +87,15 @@ function initGame() {
     setInterval(function() {
       let userState = selfPlayer.getState();
       socket.emit("update-state", userState);
-    }, 1000/30);
+    }, 1000/60);
 
 
     // Recieves world state from server at a set tick rate and updates local version accordingly
     socket.on('update-world-state', function(data) {
       // Update each player cube from server data
-      for (var id in players) {
+      for (var id in data.players) {
         // Currently placing full trust in client to their selfPlayer position
-        if (id != socket.id) players[id].setState(data[id]);
+        if (id != socket.id) players[id].setState(data.players[id]);
       }
     });
 

@@ -1,20 +1,64 @@
 
 /*
-	Matty public ip: 120.153.145.248
+	Matty public ip: http://120.153.145.248:8080/
 
-	http://120.153.145.248:8080/boilerplate/
+
+	
+	Array containing 
+	
+
+	roomList = {
+		"room1": {
+			"players": {
+				"id1": {
+					"position": {x:0,y:0,z:0},
+					"rotation": {x:0,y:0,z:0}
+				}
+			}
+			"objects": {
+				
+			}
+		}
+	}
 
 */
 
-// List of players
-// Players are stored as: {id:{}, id:{}}
-let players = {};
+// List of rooms containing players in them
+let roomList = {
+	"room1": {
+		"players": {
 
+		}
+	},
+	"room2": {
+		"players": {
+
+		}
+	},
+	"room3": {
+		"players": {
+
+		}
+	}
+};
+
+// List of players with key as socket.id and values as room name string
+// e.g. {"id123": "room1"}
+let playerList = {};
+
+// Log server information
 setInterval(function() {
-	console.log("Logging Time: " + (new Date().getTime()));
-	console.log("Players online: " + Object.keys(players).length);
-	console.log(players);
-}, 1000);
+	console.log("\nLogging Time: " + (new Date().getTime()));
+
+	console.log("Players online: " + Object.keys(playerList).length);
+
+	for (let roomName in roomList) {
+		console.log("	" + roomName + ": " + Object.keys(roomList[roomName]["players"]).length);
+	}
+
+	console.log("roomList:", roomList)
+	console.log("playerList:", playerList)
+}, 3000);
 
 
 // Listen on port 3000 
@@ -27,45 +71,56 @@ io.sockets.on('connection', function (socket) {
 
 	console.log("Player connected: ", socket.id);
 
-	// Tells all users that a user connected
-	socket.broadcast.emit("user-connected", socket.id);
+	socket.on("join-room", function (roomName) {
+		console.log("Player " + socket.id + " joining room: " + roomName);
+		socket.join(roomName);
+
+		// Create players state in room
+		roomList[roomName]["players"][socket.id] = {
+			"position": {x:0, y:3, z:5},
+			"rotation": {x:0, y:0, z:0}
+		};
+
+		// Add to playerList with room name
+		playerList[socket.id] = roomName;
 
 
-
-	// Create players position in world state
-	players[socket.id] = {
-        "position": {x:0, y:3, z:5},
-        "rotation": {x:0, y:0, z:0}
-    };
-
-	// Send world state to new player to allow them to start updating their own position
-	socket.emit('init-world-state', players);
-
-	// Start sending world state to client 30 times per second
-	setInterval(function() {
-		socket.emit('update-world-state', players);
-	}, 1000/30);
+		// Send world state to new player to allow them to start updating their own position
+		socket.emit('init-world-state', roomList[roomName]);
 
 
-	// Wait for client to send their own state
-	socket.on('update-state', function (data) {
-		players[socket.id] = data;
+		// Tells all users in room that a user connected
+		socket.to(roomName).emit("user-connected", socket.id);
+
+
+		// Wait for client to send their own state
+		socket.on('update-state', function (data) {
+
+			// Set players updated position in room 
+			let roomName = playerList[socket.id];
+			roomList[roomName]["players"][socket.id] = data;
+		});
+
+		
+
+		// If client disconnects, remove them from room and tell other users
+		socket.on('disconnect', function () {
+			let roomName = playerList[socket.id];
+			console.log("Player " + socket.id + " disconnected from room " + roomName);
+
+			// Remove player from room
+			delete roomList[roomName]["players"][socket.id];
+
+			// Remove player from playerList
+			delete playerList[socket.id];
+
+			// Tells all users in room that user disconnected
+			socket.to(roomName).emit("user-disconnected", socket.id);
+		});
+
+
 	});
 
-
-
-
-
-
-	// If client disconnects, remove them from game
-	socket.on('disconnect', function () {
-		console.log("Player disconnected: " + socket.id);
-		delete players[socket.id];
-
-		// Tells all users that a user disconnected
-		//io.sockets.emit("user-disconnected", socket.id);
-		socket.broadcast.emit("user-disconnected", socket.id);
-	});
 
 
 
@@ -73,3 +128,10 @@ io.sockets.on('connection', function (socket) {
 });
 
 
+
+// Loop through each room and send all players in that room their room state at 60 ticks
+setInterval(function() {
+	for (let roomName in roomList) {
+		io.to(roomName).emit('update-world-state', roomList[roomName]);
+	}
+}, 1000/60);
