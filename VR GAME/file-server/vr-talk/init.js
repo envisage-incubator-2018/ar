@@ -8,17 +8,20 @@ var vrDisplay;
 
 // Various global THREE.Objects.
 var scene;
-var controls;
 var effect;
-var camera;
-var fakeCamera;
-var player;
 
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 
+// The player which represents the client themselves
+var selfPlayer;
 
-function initVR() {
+var chosenRoom;
+
+function initVR(tempRoom) {
+  chosenRoom = tempRoom
+
+  
   // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
   // Only enable it if you actually need to.
   var renderer = new THREE.WebGLRenderer({antialias: true});
@@ -30,23 +33,8 @@ function initVR() {
   // Create a three.js scene.
   scene = new THREE.Scene();
 
-  // Player holds camera AND cube
-  //player = new THREE.Group();
-
-  // Create a three.js camera.
-  var aspect = window.innerWidth / window.innerHeight;
-  camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
-
-  // Add audio listener to the camera
-  var listener = new THREE.AudioListener();
-  camera.add(listener);
-
-  //fakeCamera = new THREE.Object3D();
-  controls = new THREE.VRControls(camera);
-  controls.standing = true;
-  //camera.position.y = controls.userHeight;
-
-  //player.add(camera);
+  // Create self player
+  selfPlayer = new Player(true);
 
   // Apply VR stereo rendering to renderer.
   effect = new THREE.VREffect(renderer);
@@ -64,8 +52,8 @@ function initVR() {
   };
   vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
   vrButton.on('exit', function() {
-    camera.quaternion.set(0, 0, 0, 1);
-    camera.position.set(0, controls.userHeight, 0);
+    selfPlayer.camera.quaternion.set(0, 0, 0, 1);
+    selfPlayer.camera.position.set(0, selfPlayer.controls.userHeight, 0);
   });
   vrButton.on('hide', function() {
     document.getElementById('ui').style.display = 'none';
@@ -98,8 +86,8 @@ function initVR() {
 // Adjusts camera to current display size
 function onResize(e) {
   effect.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+  selfPlayer.camera.aspect = window.innerWidth / window.innerHeight;
+  selfPlayer.camera.updateProjectionMatrix();
 }
 
 // Starts animation of world
@@ -118,6 +106,8 @@ function animate(timestamp) {
   var delta = Math.min(timestamp - lastRenderTime, 500);
   lastRenderTime = timestamp;
 
+  selfPlayer.update(delta);
+
   updateGame(delta);
 
   // Performs local updates on room (objects only visible to local user like snow for example)
@@ -129,23 +119,8 @@ function animate(timestamp) {
     animateRoom3()
   }
 
-  // Only update controls (looking around and stuff) if VRDisplay is presenting.
-  if (vrButton.isPresenting()) {
-    controls.update();
-  }
-  
-  // Temporarily save the camera rotation
-  //var camRot = camera.quaternion.clone();
-  
-  // Apply the VR camera rotation
-  // on top of the actual camera.
-  //camera.quaternion.multiply(fakeCamera.quaternion);
-
-  // Render the scene.
-  effect.render(scene, camera);
-  
-  // Revert the rotation
-  //camera.quaternion.copy(camRot);
+  // Render the scene from selfPlayers camera view
+  effect.render(scene, selfPlayer.camera);
 
   vrDisplay.requestAnimationFrame(animate);
 }
