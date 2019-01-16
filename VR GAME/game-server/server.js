@@ -23,20 +23,35 @@
 
 */
 
-// List of rooms containing players in them
+// List of rooms containing players/objects in them
+// Players contain position/rotation information
+// Objects are objects in the room with position/rotation that is global to all players in that room
 let roomList = {
 	"room1": {
 		"players": {
 
+		},
+		"objects": {	
+			"cube1": {
+				"id": "cube1",
+				"position": {x:-3,y:3,z:-3},
+				"rotation": {x:0,y:0,z:0}
+			}
 		}
 	},
 	"room2": {
 		"players": {
 
+		},
+		"objects": {	
+
 		}
 	},
 	"room3": {
 		"players": {
+
+		},
+		"objects": {	
 
 		}
 	}
@@ -131,6 +146,9 @@ io.sockets.on('connection', function (socket) {
 
 // Loop through each room and send all players in that room their room state at 60 ticks
 setInterval(function() {
+	// Update cube position
+	roomList["room1"]["objects"]["cube1"]["position"]["x"] = -3 + Math.sin(new Date().getTime()/1000);
+
 	for (let roomName in roomList) {
 		io.to(roomName).emit('update-world-state', roomList[roomName]);
 	}

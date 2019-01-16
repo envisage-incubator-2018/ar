@@ -28,7 +28,7 @@
 */
 
 
-class Player {
+class PlayerClass {
   constructor(self=false) {
     this.self = self;
 

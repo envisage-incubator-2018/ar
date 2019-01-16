@@ -9,17 +9,26 @@
   - if player is self, set self to current position and add to players list
 
 
-
-
-
+  
+  Objects are global to all players
+  Client recieves initial position of all objects
+  Objects is a dictionary of objects that exist in scene
+  When an object is added to room, clients recieve the object information (which also contains the object id)
+  When an object is removed from the room, clients recieve just the id of the object
+  Each tick, the server sends a dictionary of all objects in scene
+    - This dictionary may not need to contain all the information about the object, just the parts
+      that may change (position/rotation) and other things like object model is only needed when the object is added
+  Client creates/updates their own dictionary of the object list, different from what the server stores
+    - Objects use an objectClass which has similar function to playerClass
 
 */
 
 
 let socket;
-let players = {};   // Stores the cubes of each player
-let gamepad;
+let players = {};   // Stores a PlayerClass for each player keyed by the players id
+let objects = {};   // Stores an ObjectClass for each object in scene keyed by a custom object id
 
+let gamepad;
 let joysticks = {
     "LeftHorizontal" : 0,
     "LeftVertical" : 1,
@@ -52,7 +61,7 @@ function initGame() {
   socket.on("user-connected", function(id) {
     console.log("User connected: " + id);
 
-    players[id] = new Player();
+    players[id] = new PlayerClass();
   });
 
   // Remove players who have disconnected from scene
@@ -76,9 +85,14 @@ function initGame() {
         players[id] = selfPlayer;
         selfPlayer.setState(data.players[id]);
       } else {  // Add other players to scene with their respective state
-        players[id] = new Player();
+        players[id] = new PlayerClass();
         players[id].setState(data.players[id]);
       }
+    }
+
+    // Add each object to room
+    for (let id in data.objects) {
+      objects[id] = new ObjectClass(data.objects[id]);
     }
 
 
@@ -92,14 +106,43 @@ function initGame() {
 
     // Recieves world state from server at a set tick rate and updates local version accordingly
     socket.on('update-world-state', function(data) {
-      // Update each player cube from server data
-      for (var id in data.players) {
+      // Update each player from server data
+      for (let id in data.players) {
         // Currently placing full trust in client to their selfPlayer position
         if (id != socket.id) players[id].setState(data.players[id]);
+      }
+
+      // Update each object from server data
+      for (let id in data.objects) {
+        objects[id].setState(data.objects[id]);
       }
     });
 
   });
+
+
+
+
+
+  // Adds object to room
+  socket.on("object-added", function(objectData) {
+    console.log("Object added: " + objectData);
+
+    // Creation of the object automatically adds to scene and this declaration adds to objects dictionary
+    objects[objectData.id] = new ObjectClass(objectData);
+  });
+
+  // Adds object to room
+  socket.on("object-removed", function(id) {
+    console.log("Object removed: " + id);
+
+    // This function removes object from scene
+    objects[id].removeFromScene();
+
+    // Delete object from objects dictionary
+    delete objects[id];
+  });
+
 
 }
 
