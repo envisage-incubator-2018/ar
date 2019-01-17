@@ -39,7 +39,8 @@ let roomList = {
 	"room2": new Room_Blank(),
 	"room3": new Room_Pong(),
 	"room4": new Room_Soccer(),
-	"room5": new Room_Blank()
+	"room5": new Room_Blank(),
+	"room6": new Room_Blank()
 };
 
 // List of players with key as socket.id and values as room name string
