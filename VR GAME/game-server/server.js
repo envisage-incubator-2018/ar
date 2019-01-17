@@ -148,7 +148,6 @@ io.sockets.on('connection', function (socket) {
 			socket.to(roomName).emit("user-disconnected", socket.id);
 		});
 
-<<<<<<< HEAD
 		function rtc_disconnect() {
 			// Tell all of the other clients to close the connection to this client
 			io.to(roomName).emit("remove_rtc_peer", socket.id);
@@ -163,17 +162,7 @@ io.sockets.on('connection', function (socket) {
 });
 
 
-// Loop through each room and send all players in that room their room state at 60 ticks
-=======
-	});
-
-
-});
-
-
-
 // Server-side update function
->>>>>>> f4dfab2b6dd23d47f7a86ce7c57e54a47593b6de
 setInterval(function() {
 	// Loop through each room and send all players in that room their room state at 60 ticks
 	for (let roomName in roomList) {
