@@ -27,8 +27,7 @@ var peer_audio_objects = {};
 
 function initVR(tempRoom) {
   chosenRoom = tempRoom
-
-
+  
   // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
   // Only enable it if you actually need to.
   var renderer = new THREE.WebGLRenderer({antialias: true});
@@ -41,7 +40,8 @@ function initVR(tempRoom) {
   scene = new THREE.Scene();
 
   // Create self player
-  selfPlayer = new Player(true);
+  selfPlayer = new PlayerClass(true);
+
 
   // Apply VR stereo rendering to renderer.
   effect = new THREE.VREffect(renderer);
@@ -312,6 +312,7 @@ function animate(timestamp) {
   lastRenderTime = timestamp;
 
   selfPlayer.update(delta);
+  colliding=false
 
   updateGame(delta);
 
@@ -322,7 +323,32 @@ function animate(timestamp) {
     animateRoom2()
   }else if(chosenRoom== 3){
     animateRoom3()
+  }else if(chosenRoom== 4){
+    animateRoom4()
+  }else if(chosenRoom== 5){
+    animateRoom5()
   }
+
+
+
+  //console.log(colliding)
+
+  if(colliding==true){
+	  if(selfPlayer.movedForward==true){
+		selfPlayer.playerGroup.translateZ( 10* delta * selfPlayer.movementSpeed );
+	  }
+	  if(selfPlayer.movedBack==true){
+		selfPlayer.playerGroup.translateZ( 10* delta * -selfPlayer.movementSpeed );
+	  }
+	  if(selfPlayer.movedLeft==true){
+		selfPlayer.playerGroup.translateX( 10* delta * selfPlayer.movementSpeed );
+	  }
+	   if(selfPlayer.movedRight==true){
+		selfPlayer.playerGroup.translateX( 10* delta * -selfPlayer.movementSpeed );
+	  }
+
+  }
+
 
   // Render the scene from selfPlayers camera view
   effect.render(scene, selfPlayer.camera);

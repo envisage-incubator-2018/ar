@@ -23,23 +23,22 @@
 
 */
 
-// List of rooms containing players in them
+
+
+
+let Room_Blank = require("./room_blank.js");
+let Room_Soccer = require("./room_soccer.js");
+
+
+// List of rooms containing players/objects in them
+// Players contain position/rotation information
+// Objects are objects in the room with position/rotation that is global to all players in that room
 let roomList = {
-	"room1": {
-		"players": {
-
-		}
-	},
-	"room2": {
-		"players": {
-
-		}
-	},
-	"room3": {
-		"players": {
-
-		}
-	}
+	"room1": new Room_Blank(),
+	"room2": new Room_Blank(),
+	"room3": new Room_Blank(),
+	"room4": new Room_Soccer(),
+	"room5": new Room_Blank()
 };
 
 // List of players with key as socket.id and values as room name string
@@ -53,7 +52,7 @@ setInterval(function() {
 	console.log("Players online: " + Object.keys(playerList).length);
 
 	for (let roomName in roomList) {
-		console.log("	" + roomName + ": " + Object.keys(roomList[roomName]["players"]).length);
+		console.log("	" + roomName + ": " + Object.keys(roomList[roomName].players).length);
 	}
 
 	console.log("roomList:", roomList)
@@ -67,38 +66,32 @@ io.set("heartbeat interval", 1000);
 
 console.log("Starting server");
 
+
 io.sockets.on('connection', function (socket) {
 
 	console.log("Player connected: ", socket.id);
 
 	socket.on("join-room", function (roomName) {
 		console.log("Player " + socket.id + " joining room: " + roomName);
-		socket.join(roomName);
 
-		// Create players state in room
-		roomList[roomName]["players"][socket.id] = {
-			"position": {x:0, y:3, z:5},
-			"rotation": {x:0, y:0, z:0}
-		};
+		socket.join(roomName);	// Join the socket room for that room
+		roomList[roomName].addPlayer(socket.id);	// Add player to room class
 
-		// Add to playerList with room name
+		// Add to playerList with roomName
 		playerList[socket.id] = roomName;
 
-
 		// Send world state to new player to allow them to start updating their own position
-		socket.emit('init-world-state', roomList[roomName]);
-
+		socket.emit('init-world-state', roomList[roomName].getRoomState());
 
 		// Tells all users in room that a user connected
 		socket.to(roomName).emit("user-connected", socket.id);
 
-
 		// Wait for client to send their own state
-		socket.on('update-state', function (data) {
+		socket.on('update-state', function (playerData) {
 
 			// Set players updated position in room
 			let roomName = playerList[socket.id];
-			roomList[roomName]["players"][socket.id] = data;
+			roomList[roomName].setPlayerState(socket.id, playerData);
 		});
 
 		// RTC event handlers
@@ -146,7 +139,7 @@ io.sockets.on('connection', function (socket) {
 			rtc_disconnect();
 
 			// Remove player from room
-			delete roomList[roomName]["players"][socket.id];
+			roomList[roomName].removePlayer(socket.id);
 
 			// Remove player from playerList
 			delete playerList[socket.id];
@@ -155,6 +148,7 @@ io.sockets.on('connection', function (socket) {
 			socket.to(roomName).emit("user-disconnected", socket.id);
 		});
 
+<<<<<<< HEAD
 		function rtc_disconnect() {
 			// Tell all of the other clients to close the connection to this client
 			io.to(roomName).emit("remove_rtc_peer", socket.id);
@@ -170,8 +164,23 @@ io.sockets.on('connection', function (socket) {
 
 
 // Loop through each room and send all players in that room their room state at 60 ticks
+=======
+	});
+
+
+});
+
+
+
+// Server-side update function
+>>>>>>> f4dfab2b6dd23d47f7a86ce7c57e54a47593b6de
 setInterval(function() {
+	// Loop through each room and send all players in that room their room state at 60 ticks
 	for (let roomName in roomList) {
-		io.to(roomName).emit('update-world-state', roomList[roomName]);
+		// First update room
+		roomList[roomName].update();
+
+		// Send new room state to all players
+		io.to(roomName).emit('update-world-state', roomList[roomName].getRoomState());
 	}
 }, 1000/60);
