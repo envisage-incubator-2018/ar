@@ -56,6 +56,9 @@ function loadWorld() {
   }else if(chosenRoom== 5){
     loadRoom5()
     resourcesToLoad = 3
+  }else if(chosenRoom== 6){
+    loadRoom6()
+    resourcesToLoad = 3
   }
 
 }
@@ -203,7 +206,7 @@ function loadRoom1(){
   lightPos =   new THREE.Vector3(-40,20,20)
   directionalLight.position.copy( lightPos)
   scene.add( directionalLight );
-  
+
   var light = new THREE.PointLight( 0xffd700, 1, 6 );
   light.position.set(12, 1, 0 );
   scene.add(light)
@@ -343,8 +346,8 @@ function loadRoom2(){
   testBox.position.y+=1
   testBound = new THREE.Box3().setFromObject(testBox)
   scene.add(testBox)
-  
-  
+
+
   var geometry = new THREE.BoxGeometry( 1, 1, 1 )
   //var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
   cube = new THREE.Mesh( geometry, cubeMat )
@@ -378,13 +381,13 @@ function animateRoom2() {
   //console.log("animate room 2")
   //skyBox.rotation.y +=0.001
 
-  
+
   cube.position.y +=0.01
   cube.position.x -= 0.01
   cube.position.z -= 0.02
   cube.rotation.x += 0.01
   cube.rotation.y += 0.1
-  
+
   cubeBound.setFromObject(cube)
   colliding = selfPlayer.playerCollider.intersectsBox(testBound)
 
@@ -647,6 +650,74 @@ scene.add( directionalLight );
 
 //ANIMATE ROOM 5
 function animateRoom5() {
+	cube.position.y +=0.01
+	cube.position.x -= 0.01
+	cube.rotation.x += 0.01
+	cube.rotation.y += 0.1
+
+}
+///////////////BEGIN LOAD ROOM 6///////////// (Mitchell WebRTC)
+
+function loadRoom6(){
+
+var groundTex = textureLoader.load('tex/sky.jpg', resourceLoaded)
+var groundMat = new THREE.MeshToonMaterial({map: groundTex})
+
+var cubeTex = textureLoader.load('tex/box.jpg', resourceLoaded)
+var cubeMat = new THREE.MeshStandardMaterial({map: cubeTex})
+
+var skyTex = textureLoader.load("tex/ground.jpg", resourceLoaded)
+var skyMat = new THREE.MeshBasicMaterial({
+		map: skyTex,
+		side: THREE.BackSide
+});
+
+var white = new THREE.MeshBasicMaterial( { color: 0x707070  } )
+// load a resource
+
+
+
+
+
+
+//using a while loop because for loop would iterate through everything except what was underneath gLoader and then do that last with i held at 16
+var y = 0
+
+//cloud.position.y = 10
+//var ambLight = new THREE.AmbientLight( 0x101010 ); // soft white light
+//scene.add( ambLight );
+
+var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
+ground = new THREE.Mesh( groundGeometry,  groundMat )
+scene.add( ground )
+
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 )
+//var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
+cube = new THREE.Mesh( geometry, cubeMat )
+scene.add( cube )
+
+
+
+
+
+
+
+var skyGeo = new THREE.BoxGeometry (1000, 1000, 1000)
+skyBox = new THREE.Mesh( skyGeo, skyMat)
+skyBox.position.y=5
+scene.add( skyBox )
+
+
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+lightPos =   new THREE.Vector3(2,10,5)
+directionalLight.position.copy( lightPos)
+scene.add( directionalLight );
+//directionalLight.target = cube
+}
+
+//ANIMATE ROOM 6
+function animateRoom6() {
 	cube.position.y +=0.01
 	cube.position.x -= 0.01
 	cube.rotation.x += 0.01
