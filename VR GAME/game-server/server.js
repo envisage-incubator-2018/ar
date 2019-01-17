@@ -27,6 +27,7 @@
 
 
 let Room_Blank = require("./room_blank.js");
+let Room_Soccer = require("./room_soccer.js");
 
 
 // List of rooms containing players/objects in them
@@ -36,7 +37,7 @@ let roomList = {
 	"room1": new Room_Blank(),
 	"room2": new Room_Blank(),
 	"room3": new Room_Blank(),
-	"room4": new Room_Blank(),
+	"room4": new Room_Soccer(),
 	"room5": new Room_Blank()
 };
 

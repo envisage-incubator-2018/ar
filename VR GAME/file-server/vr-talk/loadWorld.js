@@ -509,7 +509,7 @@ function animateRoom3() {
 
 function loadRoom4(){
 
-var groundTex = textureLoader.load('tex/box.jpg', resourceLoaded)
+var groundTex = textureLoader.load('tex/ground.jpg', resourceLoaded)
 var groundMat = new THREE.MeshToonMaterial({map: groundTex})
 
 var cubeTex = textureLoader.load('tex/box.jpg', resourceLoaded)
@@ -536,17 +536,32 @@ var y = 0
 //var ambLight = new THREE.AmbientLight( 0x101010 ); // soft white light
 //scene.add( ambLight );
 
-var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
+var groundGeometry = new THREE.BoxGeometry( 20, 0.1, 30 )
 ground = new THREE.Mesh( groundGeometry,  groundMat )
 scene.add( ground )
 
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 )
-//var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
-cube = new THREE.Mesh( geometry, cubeMat )
-scene.add( cube )
 
+// Add walls
+var geometry = new THREE.BoxGeometry( 20, 1, 0.1 )
+wall1 = new THREE.Mesh( geometry, cubeMat )
+wall1.position.set(0,0.5,-15);
+scene.add( wall1 )
 
+var geometry = new THREE.BoxGeometry( 20, 1, 0.1 )
+wall2 = new THREE.Mesh( geometry, cubeMat )
+wall2.position.set(0,0.5,15);
+scene.add( wall2 )
+
+var geometry = new THREE.BoxGeometry( 0.1, 1, 30 )
+wall3 = new THREE.Mesh( geometry, cubeMat )
+wall3.position.set(10,0.5,0);
+scene.add( wall3 )
+
+var geometry = new THREE.BoxGeometry( 0.1, 1, 30 )
+wall4 = new THREE.Mesh( geometry, cubeMat )
+wall4.position.set(-10,0.5,0);
+scene.add( wall4 )
 
 
 
@@ -567,10 +582,6 @@ scene.add( directionalLight );
 
 //ANIMATE ROOM 4
 function animateRoom4() {
-	cube.position.y +=0.01
-	cube.position.x -= 0.01
-	cube.rotation.x += 0.01
-	cube.rotation.y += 0.1
 
 }
 
