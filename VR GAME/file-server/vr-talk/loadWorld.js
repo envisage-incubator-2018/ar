@@ -386,7 +386,7 @@ function animateRoom2() {
   cube.rotation.y += 0.1
   
   cubeBound.setFromObject(cube)
-  
+  colliding = selfPlayer.playerCollider.intersectsBox(testBound)
 
   var j = 0
   while(j<32){
