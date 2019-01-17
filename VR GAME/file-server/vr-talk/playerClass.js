@@ -29,149 +29,149 @@
 
 
 class PlayerClass {
-  constructor(self=false) {
-    this.self = self;
+	constructor(self=false) {
+		this.self = self;
 
-    this.playerGroup = new THREE.Group();
-    scene.add(this.playerGroup);
+		this.playerGroup = new THREE.Group();
+		scene.add(this.playerGroup);
 
-    var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    var material = new THREE.MeshNormalMaterial();
-    this.cube = new THREE.Mesh(geometry, material);
-	this.playerCollider = new THREE.Box3().setFromObject(this.cube)
-    this.cube.position.set(0, 0, 0);
-    this.cube.rotation.set(0, 0, 0);
-    this.playerGroup.add(this.cube);
-	//this.playerGroup.add(this.playerCollider);
+		var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+		var material = new THREE.MeshNormalMaterial();
+		this.cube = new THREE.Mesh(geometry, material);
+		this.playerCollider = new THREE.Box3().setFromObject(this.cube)
+		this.cube.position.set(0, 0, 0);
+		this.cube.rotation.set(0, 0, 0);
+		this.playerGroup.add(this.cube);
+		//this.playerGroup.add(this.playerCollider);
 
-    this.movementSpeed = 0.003;
-    this.rotationSpeed = 0.0012;
-	//this.duckLength =0.1;
-	
-	//collision handling
-	this.movedForward = false
-	this.movedBack = false
-	this.movedLeft = false
-	this.movedRight = false
+		this.movementSpeed = 0.003;
+		this.rotationSpeed = 0.0012;
+		//this.duckLength =0.1;
 
-    // If player represents client
-    if (this.self) {
+		//collision handling
+		this.movedForward = false
+		this.movedBack = false
+		this.movedLeft = false
+		this.movedRight = false
 
-      // Create a three.js camera.
-      var aspect = window.innerWidth / window.innerHeight;
-      this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
-	  this.camera.position.set(0, 1.5, 0 )
+		// If player represents client
+		if (this.self) {
 
-      // Add audio listener to the camera
-      var listener = new THREE.AudioListener();
-      this.camera.add(listener);
+			// Create a three.js camera.
+			var aspect = window.innerWidth / window.innerHeight;
+			this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
+			this.camera.position.set(0, 1.5, 0 )
 
-      this.controls = new THREE.VRControls(this.camera);
-      //this.controls.standing = true;
+			// Add audio listener to the camera
+			var listener = new THREE.AudioListener();
+			this.camera.add(listener);
 
-      this.playerGroup.add(this.camera);
-    }
+			this.controls = new THREE.VRControls(this.camera);
+			//this.controls.standing = true;
 
-  }
-  update(delta) {
-	this.movedForward = false
-	this.movedBack = false
-	this.movedLeft = false
-	this.movedRight = false
+			this.playerGroup.add(this.camera);
+		}
 
-
-    //this.playerGroup.translateZ( delta * -0.001 );
-    //this.playerGroup.rotateY ( delta * 0.0001 )
-
-    if (gamepad != undefined) {
-      if (Math.abs(gamepad.axes[joysticks['LeftVertical']]) > 0.05) {
-          this.playerGroup.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
-      }
-      if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']]) > 0.05) {
-          this.playerGroup.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
-      }
-      if (Math.abs(gamepad.axes[joysticks["RightHorizontal"]]) > 0.05) {
-        // Copied from new version of Three.js
-        var q1 = new THREE.Quaternion();
-
-        q1.setFromAxisAngle(new THREE.Vector3(0, 1, 0), gamepad.axes[joysticks['RightHorizontal']] * -0.05);
-        this.playerGroup.quaternion.premultiply(q1);
-
-      }
-      if (Math.abs(gamepad.axes[joysticks["RightVertical"]]) > 0.05) {
-        this.playerGroup.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);       
-      }
-      
-    } else {  // Move with keyboard controls
-      
-	  if (keyDown["KeyW"]) {
-        this.playerGroup.translateZ( delta * -this.movementSpeed );
-		this.movedForward = true
-      }
-      if (keyDown["KeyS"]) {
-        this.playerGroup.translateZ( delta * this.movementSpeed );
-		this.movedBack=true
-		console.log("movng back")
-      }  
-      if (keyDown["KeyA"]) {
-        this.playerGroup.translateX( delta * -this.movementSpeed );
-		this.movedLeft=true
-      }  
-      if (keyDown["KeyD"]) {
-        this.playerGroup.translateX( delta * this.movementSpeed );
-		this.movedRight=true
-      }
-      if (keyDown["KeyE"]) {
-        this.playerGroup.rotateY( delta * -this.rotationSpeed );
-      }
-      if (keyDown["KeyQ"]) {
-        this.playerGroup.rotateY ( delta * this.rotationSpeed );
-      }
-      if (keyDown["Space"]) {
-        //this.playerGroup.translateY( delta * this.movementSpeed );
-      }  
-      if (keyDown["ShiftLeft"]) {
-        this.camera.position.set(0, 1.0, 0 )
-      }
-	  else{
-		  this.camera.position.set(0, 1.5, 0 )
-	  }
-	  
-    }
-
-    //console.log(delta)
-    
-    //players[socket.id].rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+	}
+	update(delta) {
+		this.movedForward = false
+		this.movedBack = false
+		this.movedLeft = false
+		this.movedRight = false
 
 
+		//this.playerGroup.translateZ( delta * -0.001 );
+		//this.playerGroup.rotateY ( delta * 0.0001 )
 
-    // Only update controls (looking around and stuff) if VRDisplay is presenting.
-    if (vrButton.isPresenting()) {
-      this.controls.update();
-    }
-	
-	this.playerCollider.setFromObject(this.cube)
-  }
-  setState(state) {
-    this.playerGroup.position.set(state.position.x, state.position.y, state.position.z);
-    this.playerGroup.rotation.set(state.rotation.x, state.rotation.y, state.rotation.z);
-  }
-  getState() {
-    //return {"position": this.playerGroup.position, "rotation": {x:0,y:0,z:0}};
-    return {
-      "position": this.playerGroup.position,
-      "rotation": {
-        x:this.playerGroup.rotation.x + this.camera.rotation.x, 
-        y:this.playerGroup.rotation.y + this.camera.rotation.y, 
-        z:this.playerGroup.rotation.z + this.camera.rotation.z
-      }
-    }
-  }
-  addToScene() {
+		if (gamepad != undefined) {
+			if (Math.abs(gamepad.axes[joysticks['LeftVertical']]) > 0.05) {
+				this.playerGroup.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
+			}
+			if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']]) > 0.05) {
+				this.playerGroup.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
+			}
+			if (Math.abs(gamepad.axes[joysticks["RightHorizontal"]]) > 0.05) {
+				// Copied from new version of Three.js
+				var q1 = new THREE.Quaternion();
 
-  }
-  removeFromScene() {
-    scene.remove(this.playerGroup);
-  }
+				q1.setFromAxisAngle(new THREE.Vector3(0, 1, 0), gamepad.axes[joysticks['RightHorizontal']] * -0.05);
+				this.playerGroup.quaternion.premultiply(q1);
+
+			}
+			if (Math.abs(gamepad.axes[joysticks["RightVertical"]]) > 0.05) {
+				this.playerGroup.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);       
+			}
+
+		} else {  // Move with keyboard controls
+
+			if (keyDown["KeyW"]) {
+				this.playerGroup.translateZ( delta * -this.movementSpeed );
+				this.movedForward = true
+			}
+			if (keyDown["KeyS"]) {
+				this.playerGroup.translateZ( delta * this.movementSpeed );
+				this.movedBack=true
+				//console.log("movng back")
+			}  
+			if (keyDown["KeyA"]) {
+				this.playerGroup.translateX( delta * -this.movementSpeed );
+				this.movedLeft=true
+			}  
+			if (keyDown["KeyD"]) {
+				this.playerGroup.translateX( delta * this.movementSpeed );
+				this.movedRight=true
+			}
+			if (keyDown["KeyE"]) {
+				this.playerGroup.rotateY( delta * -this.rotationSpeed );
+			}
+			if (keyDown["KeyQ"]) {
+				this.playerGroup.rotateY ( delta * this.rotationSpeed );
+			}
+			if (keyDown["Space"]) {
+				//this.playerGroup.translateY( delta * this.movementSpeed );
+			}  
+			if (keyDown["ShiftLeft"]) {
+				this.camera.position.set(0, 1.0, 0 )
+			}
+			else{
+				this.camera.position.set(0, 1.5, 0 )
+			}
+
+		}
+
+		//console.log(delta)
+
+		//players[socket.id].rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+
+
+
+		// Only update controls (looking around and stuff) if VRDisplay is presenting.
+		if (vrButton.isPresenting()) {
+			this.controls.update();
+		}
+
+		this.playerCollider.setFromObject(this.cube)
+	}
+	setState(state) {
+		this.playerGroup.position.set(state.position.x, state.position.y, state.position.z);
+		this.playerGroup.rotation.set(state.rotation.x, state.rotation.y, state.rotation.z);
+	}
+	getState() {
+		//return {"position": this.playerGroup.position, "rotation": {x:0,y:0,z:0}};
+		return {
+			"position": this.playerGroup.position,
+			"rotation": {
+				x:this.playerGroup.rotation.x + this.camera.rotation.x, 
+				y:this.playerGroup.rotation.y + this.camera.rotation.y, 
+				z:this.playerGroup.rotation.z + this.camera.rotation.z
+			}
+		}
+	}
+	addToScene() {
+
+	}
+	removeFromScene() {
+		scene.remove(this.playerGroup);
+	}
 
 }
