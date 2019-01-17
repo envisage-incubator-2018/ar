@@ -141,19 +141,29 @@ function initRTC(channel) {
             });
         }
     }
-    conn.track = function(event) {
-      if (event.streams.length > 0) {
-        // Create a new PositionalAudio object using the client as the listener
-        console.log(selfPlayer);
-        var sound = new THREE.PositionalAudio(selfPlayer.listener);
-        alert("HEREHERHE!!!");
-        // Turn the RTC stream into a source node, and stick it to the PositionalAudio object
-        var node = sound.context.createMediaStreamSource(event.streams[0]);
-        sound.setNodeSource(node);
+    conn.onaddstream = function(event) {
+      // Create a new PositionalAudio object using the client as the listener
+      console.log(selfPlayer);
+      temp_sound = new Audio();
+      temp_sound.srcObject = event.stream;
+      var sound = new THREE.PositionalAudio(selfPlayer.listener);
+      // sound.autoplay = true;
+      sound.setMediaElementSource(temp_sound);
+      console.log("Adding PositionalAudio object.");
+      // Turn the RTC stream into a source node, and stick it to the PositionalAudio object
+      var node = sound.context.createMediaStreamSource(event.stream);
+      sound.setNodeSource(node);
 
-        // Attach the audio source to the player object
-        players[peer_id].playerGroup.add(sound);
-      }
+      // Attach the audio source to the player object
+      players[peer_id].playerGroup.add(sound);
+      // sound.play();
+
+      peer_audio_objects[peer_id] = sound;
+
+      // var element = document.createElement("audio");
+      // element.autoplay = true;
+      // element.srcObject = event.stream;
+      // document.body.appendChild(element);
     }
 
     /* Add our local stream */
@@ -219,9 +229,7 @@ function initRTC(channel) {
         });
       }
     })
-    .catch(function(err) {
-      console.log("THIS HAS HAPPENED!!!" + err);
-    });
+    .catch(function(err) {});
 
     console.log("Set remoteDescription to " + peer.remoteDescription);
     console.log("Description from other peer is " + desc);

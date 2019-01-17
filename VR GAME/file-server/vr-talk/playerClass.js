@@ -63,8 +63,8 @@ class PlayerClass {
 			this.camera.position.set(0, 1.5, 0 )
 
 			// Add audio listener to the camera
-			var listener = new THREE.AudioListener();
-			this.camera.add(listener);
+			this.listener = new THREE.AudioListener();
+			this.camera.add(this.listener);
 
 			this.controls = new THREE.VRControls(this.camera);
 			//this.controls.standing = true;
