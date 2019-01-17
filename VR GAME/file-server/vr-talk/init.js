@@ -32,7 +32,7 @@ function initVR(tempRoom) {
   scene = new THREE.Scene();
 
   // Create self player
-  selfPlayer = new Player(true);
+  selfPlayer = new PlayerClass(true);
   
 
   // Apply VR stereo rendering to renderer.
