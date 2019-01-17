@@ -125,7 +125,7 @@ function animate(timestamp) {
   
   
   
-  console.log(colliding)
+  //console.log(colliding)
   
   if(colliding==true){
 	  if(selfPlayer.movedForward==true){

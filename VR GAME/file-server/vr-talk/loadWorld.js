@@ -43,7 +43,7 @@ function loadWorld() {
 
   if(chosenRoom== 1){
     loadRoom1()
-    resourcesToLoad = 8
+    resourcesToLoad = 10
   }else if(chosenRoom== 2){
     loadRoom2()
     resourcesToLoad = 37
