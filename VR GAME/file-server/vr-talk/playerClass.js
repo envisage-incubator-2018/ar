@@ -131,8 +131,18 @@ class PlayerClass {
 				//this.playerGroup.translateY( delta * this.movementSpeed );
 			}
 			if (keyDown["ShiftLeft"]) {
-				this.camera.position.set(0, 1.0, 0 )
+				this.playerGroup.translateY( delta * -this.movementSpeed );
 			}
+      if (keyDown["KeyH"]) {
+
+        for (var i = 0; i < intersects.length; i++) {
+        //  if (intersects[i].object.position.y != 5) {
+            intersects[0].object.material.color.set(0xff0000);
+        //  }
+
+            console.log(intersects);
+          }
+      }
 			else{
 				this.camera.position.set(0, 1.5, 0 )
 			}
