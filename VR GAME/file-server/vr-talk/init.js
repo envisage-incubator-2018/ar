@@ -129,16 +129,16 @@ function animate(timestamp) {
   
   if(colliding==true){
 	  if(selfPlayer.movedForward==true){
-		selfPlayer.playerGroup.translateZ( 3* delta * selfPlayer.movementSpeed );
+		selfPlayer.playerGroup.translateZ( 10* delta * selfPlayer.movementSpeed );
 	  }
 	  if(selfPlayer.movedBack==true){
-		selfPlayer.playerGroup.translateZ( 3* delta * -selfPlayer.movementSpeed );
+		selfPlayer.playerGroup.translateZ( 10* delta * -selfPlayer.movementSpeed );
 	  }
 	  if(selfPlayer.movedLeft==true){
-		selfPlayer.playerGroup.translateX( 3* delta * selfPlayer.movementSpeed );
+		selfPlayer.playerGroup.translateX( 10* delta * selfPlayer.movementSpeed );
 	  }
 	   if(selfPlayer.movedRight==true){
-		selfPlayer.playerGroup.translateX( 3* delta * -selfPlayer.movementSpeed );
+		selfPlayer.playerGroup.translateX( 10* delta * -selfPlayer.movementSpeed );
 	  }
 	  
   }
