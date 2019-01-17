@@ -106,24 +106,8 @@ function animate(timestamp) {
   lastRenderTime = timestamp;
 
   selfPlayer.update(delta);
-  colliding = selfPlayer.playerCollider.intersectsBox(testBound)
-  console.log(colliding)
-  
-  if(colliding==true){
-	  if(selfPlayer.movedForward==true){
-		selfPlayer.playerGroup.translateZ( 3* delta * selfPlayer.movementSpeed );
-	  }
-	  if(selfPlayer.movedBack==true){
-		selfPlayer.playerGroup.translateZ( 3* delta * -selfPlayer.movementSpeed );
-	  }
-	  if(selfPlayer.movedLeft==true){
-		selfPlayer.playerGroup.translateX( 3* delta * selfPlayer.movementSpeed );
-	  }
-	   if(selfPlayer.movedRight==true){
-		selfPlayer.playerGroup.translateX( 3* delta * -selfPlayer.movementSpeed );
-	  }
-	  colliding=false
-  }
+  colliding=false
+
   updateGame(delta);
 
   // Performs local updates on room (objects only visible to local user like snow for example)
@@ -139,6 +123,25 @@ function animate(timestamp) {
     animateRoom5()
   }
   
+  
+  
+  console.log(colliding)
+  
+  if(colliding==true){
+	  if(selfPlayer.movedForward==true){
+		selfPlayer.playerGroup.translateZ( 3* delta * selfPlayer.movementSpeed );
+	  }
+	  if(selfPlayer.movedBack==true){
+		selfPlayer.playerGroup.translateZ( 3* delta * -selfPlayer.movementSpeed );
+	  }
+	  if(selfPlayer.movedLeft==true){
+		selfPlayer.playerGroup.translateX( 3* delta * selfPlayer.movementSpeed );
+	  }
+	   if(selfPlayer.movedRight==true){
+		selfPlayer.playerGroup.translateX( 3* delta * -selfPlayer.movementSpeed );
+	  }
+	  
+  }
 
 
   // Render the scene from selfPlayers camera view
