@@ -113,7 +113,7 @@ function initRTC(channel) {
   socket.on('add_rtc_peer', function(config) {
     console.log('Signaling server said to add peer:', config.id);
     var peer_id = config.id;
-    if (id in peers) {
+    if (peer_id in peers) {
         /* This could happen if the user joins multiple channels where the other peer is also in. */
         console.log("Already connected to peer ", peer_id);
         return;
@@ -140,31 +140,37 @@ function initRTC(channel) {
             });
         }
     }
-    conn.onaddstream = function(event) {
+    conn.track = function(event) {
+      if (event.streams.length > 0) {
         // Create a new PositionalAudio object using the client as the listener
-        var sound = new THREE.PositionalAudio(players[socket.id].listener);
+        console.log(selfPlayer);
+        var sound = new THREE.PositionalAudio(selfPlayer.listener);
+        alert("HEREHERHE!!!");
         // Turn the RTC stream into a source node, and stick it to the PositionalAudio object
-        var node = sound.context.createMediaStreamSource(event.stream);
+        var node = sound.context.createMediaStreamSource(event.streams[0]);
         sound.setNodeSource(node);
 
         // Attach the audio source to the player object
         players[peer_id].playerGroup.add(sound);
+      }
     }
 
     /* Add our local stream */
-    conn.addStream(local_media_stream);
+    if (local_media_stream) {
+      conn.addStream(local_media_stream);
+    }
 
     /* One side of the P2P connection creates an offer, which the server relays to
      * the other client. That other client then creates and answer and sends it back.
      */
     if (config.make_offer) {
       conn.createOffer(
-        function (local_description) {
-          conn.setLocalDescription(local_description,
+        function (offer) {
+          conn.setLocalDescription(offer,
             function() {
               console.log("Creating RTC offer to ", peer_id);
               socket.emit('relay_data',
-                  {'ev' : 'get_session_desc', 'peer_id': peer_id, 'session_description': local_description});
+                  {'ev' : 'get_session_desc', 'peer_id': peer_id, 'session_description': offer});
             },
             function() {console.log("Couldn't set local RTC description.")}
           );
@@ -180,35 +186,44 @@ function initRTC(channel) {
    * about their audio settings.
    */
   socket.on('get_session_desc', function(config) {
-      console.log('Remote description received: ', config);
-      var peer_id = config.peer_id;
-      var peer = peers[peer_id];
-      var remote_description = config.session_description;
+    console.log('Remote description received: ', config);
+    var peer_id = config.peer_id;
+    var peer = peers[peer_id];
+    if (peer.remoteDescription != null) {
+      console.log("Remote description already set.");
+      return;
+    }
+    var remote_description = config.session_description;
 
-      var desc = new RTCSessionDescription(remote_description);
-      var stuff = peer.setRemoteDescription(desc,
-        function() {
-          if (remote_description.type == "offer") {
-            peer.createAnswer(
-              function(local_description) {
-                peer.setLocalDescription(local_description,
-                  function() {
-                    console.log("Answering remote offer description with: ", local_description);
-                    socket.emit('relay_data',
-                        {'ev' : 'get_session_desc', 'peer_id': peer_id, 'session_description': local_description});
-                  },
-                  function() { alert("Answering offer failed!"); }
-                );
-              },
-              function(error) {
-                console.log("Error creating answer: ", error);
-                console.log(peer);
-              });
-          }
-        },
-        function(error) {
-            console.log("Couldn't set the remote description: ", error);
+    var desc = new RTCSessionDescription(remote_description);
+    var promise_chain = peer.setRemoteDescription(desc)
+    .then(function() {
+      if (remote_description.type == "offer") {
+        return peer.createAnswer(
+          function(answer) {
+            console.log(answer);
+            peer.setLocalDescription(answer)
+            .then(function() {
+              var answer = peer.localDescription;
+              console.log("Answering remote offer description with: ", answer);
+              socket.emit('relay_data',
+                {'ev' : 'get_session_desc', 'peer_id': peer_id, 'session_description': answer});
+            })
+            .catch(function(err) {
+              alert("Answering offer failed:" + err);
+            });
+          },
+          function(err) {
+            console.log("here" + err);
         });
+      }
+    })
+    .catch(function(err) {
+      console.log("THIS HAS HAPPENED!!!" + err);
+    });
+
+    console.log("Set remoteDescription to " + peer.remoteDescription);
+    console.log("Description from other peer is " + desc);
   });
 
   /**
@@ -256,7 +271,7 @@ function setup_microphone(callback) {
   // Ask user for permission to use the computer's microphone
   console.log("Requesting access to local microphone.");
 
-  navigator.getUserMedia({"audio" : true, "video" : false})
+  navigator.mediaDevices.getUserMedia({"audio" : true, "video" : false})
     .then(function(stream) {
       // If user accepts microphone access, set the local_media_stream variable
       console.log("Access granted to microphone.");
@@ -267,7 +282,8 @@ function setup_microphone(callback) {
     .catch(function(err) {
       // Otherwise, notify the user, and fail
       console.log("Access denied for microphone.");
-      alert("You did not to provide access to the microphone. You will not be able to talk.");
+      if (callback) callback();
+      console.log("You did not to provide access to the microphone. You will not be able to talk.");
     }
   );
 }

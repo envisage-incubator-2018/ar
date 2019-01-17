@@ -108,8 +108,11 @@ io.sockets.on('connection', function (socket) {
 			roomName = "room" + roomName;
 			if (roomList[roomName]["players"][socket.id]["connected"]) {
 				// Disconnect from the old channel
+				console.log("disconnecting rtc in join event");
 				rtc_disconnect();
 			}
+
+			console.log("Connecting a new RTC user");
 
 			// Tell all of the other clients to open a connection to this client
 			io.to(roomName).emit("add_rtc_peer", {"id" : socket.id, "make_offer" : false});
@@ -125,9 +128,10 @@ io.sockets.on('connection', function (socket) {
 	  });
 
 		socket.on('relay_data', function(config) {
-      if (peer_id in roomList[roomName]["players"]) {
-					// TODO how to do this
-					io.to('${peer_id}').emit(config.ev, config);
+      if (config.peer_id in roomList[roomName]["players"]) {
+				socketId = config.peer_id;
+				config.peer_id = socket.id;
+				io.to(`${socketId}`).emit(config.ev, config);
       }
     });
 
