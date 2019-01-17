@@ -32,6 +32,7 @@ var snowTrack1 = 50
 var snowTrack2 = 100
 
 
+
 function loadWorld() {
 
   //Model Loaders
@@ -48,7 +49,13 @@ function loadWorld() {
     resourcesToLoad = 37
   }else if(chosenRoom== 3){
     loadRoom3()
-    resourcesToLoad = 6
+    resourcesToLoad = 5
+  }else if(chosenRoom== 4){
+    loadRoom4()
+    resourcesToLoad = 3
+  }else if(chosenRoom== 5){
+    loadRoom5()
+    resourcesToLoad = 3
   }
 
 }
@@ -99,8 +106,29 @@ function loadRoom1(){
 				.setPath('mod/')
 				.load('cabin.obj', function ( object) {
 					object.position.y = 0
-          object.position.x =10
+					object.position.x =10
 					//cabinRef = object
+					scene.add (object)
+
+
+				}, resourceLoaded)
+
+
+	}, resourceLoaded)
+
+	new THREE.MTLLoader()
+		.setPath( 'mod/mat/' )
+		.load( 'fire.mtl', function(materials){
+
+			materials.preload()
+
+			new THREE.OBJLoader()
+				.setMaterials(materials)
+				.setPath('mod/')
+				.load('fire.obj', function ( object) {
+					object.position.z =0
+					object.position.x =13
+					fireRef = object
 					scene.add (object)
 
 
@@ -175,6 +203,10 @@ function loadRoom1(){
   lightPos =   new THREE.Vector3(-40,20,20)
   directionalLight.position.copy( lightPos)
   scene.add( directionalLight );
+  
+  var light = new THREE.PointLight( 0xffd700, 1, 6 );
+  light.position.set(12, 1, 0 );
+  scene.add(light)
   //directionalLight.target = cube
 
 
@@ -202,6 +234,7 @@ function animateRoom1() {
 
   snowRef2.position.y-=0.1
   snowTrack2 -= 0.1
+  fireRef.rotation.y +=1
 
   //console.log("1: " + snowTrack1)
   //console.log("2: " + snowTrack2)
@@ -304,10 +337,18 @@ function loadRoom2(){
 
 
 
-
+  var colGeo = new THREE.BoxGeometry( 2, 2, 2)
+  testBox =new THREE.Mesh(colGeo, cubeMat)
+  testBox.position.z-=2
+  testBox.position.y+=1
+  testBound = new THREE.Box3().setFromObject(testBox)
+  scene.add(testBox)
+  
+  
   var geometry = new THREE.BoxGeometry( 1, 1, 1 )
   //var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
   cube = new THREE.Mesh( geometry, cubeMat )
+  cubeBound = new THREE.Box3().setFromObject(cube)
   scene.add( cube )
 
 
@@ -334,13 +375,19 @@ function loadRoom2(){
 
 //ANIMATE ROOM 2
 function animateRoom2() {
-  console.log("animate room 2")
+  //console.log("animate room 2")
   //skyBox.rotation.y +=0.001
 
+  
   cube.position.y +=0.01
   cube.position.x -= 0.01
+  cube.position.z -= 0.02
   cube.rotation.x += 0.01
   cube.rotation.y += 0.1
+  
+  cubeBound.setFromObject(cube)
+  
+
   var j = 0
   while(j<32){
     //console.log("moving " + j)
@@ -363,7 +410,7 @@ function animateRoom2() {
 
 function loadRoom3(){
 
-var snowTex = textureLoader.load('tex/snow/snow.jpg', resourceLoaded)
+var snowTex = textureLoader.load('tex/snow/sky.jpg', resourceLoaded)
 var snowMat = new THREE.MeshToonMaterial({map: snowTex})
 
 var cubeTex = textureLoader.load('tex/box.jpg', resourceLoaded)
@@ -384,38 +431,21 @@ var white = new THREE.MeshBasicMaterial( { color: 0x707070  } )
 
 loader.load(
 
-	'mod/snow.obj',
+	'mod/stars.obj',
 	// called when resource is loaded
-	function ( snow ) {
+	function ( star ) {
     resourceLoaded()
-		snowRef = snow
-		snow.traverse(function(node){
+		starRef = star
+		star.traverse(function(node){
 			if (node.isMesh) node.material = snowMat
 
 		})
 
-		scene.add( snow );
-
+		scene.add( star );
 	}
 );
 
-loader.load(
 
-	'mod/snow.obj',
-	// called when resource is loaded
-	function ( snow2 ) {
-    resourceLoaded()
-		snowRef2 = snow2
-		snow2.traverse(function(node){
-			if (node.isMesh) node.material = snowMat
-			snow2.position.y=50
-
-		})
-
-		scene.add( snow2 );
-
-	}
-);
 
 
 //using a while loop because for loop would iterate through everything except what was underneath gLoader and then do that last with i held at 16
@@ -441,10 +471,10 @@ scene.add( cube )
 
 
 
-var skyGeo = new THREE.BoxGeometry (50, 50, 50)
+var skyGeo = new THREE.BoxGeometry (1000, 1000, 1000)
 skyBox = new THREE.Mesh( skyGeo, skyMat)
 skyBox.position.y=5
-scene.add( skyBox )
+//scene.add( skyBox )
 
 
 var directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
@@ -465,29 +495,152 @@ function animateRoom3() {
 	var j = 0
 
 	//console.log(snowRef.positon.y)
-	snowRef.position.y -= 0.1
-	snowTrack1 -= 0.1
-
-	snowRef2.position.y-=0.1
-	snowTrack2 -= 0.1
+	starRef.rotation.z += 0.002
 
 	//console.log("1: " + snowTrack1)
 	//console.log("2: " + snowTrack2)
-	if(snowTrack1 <= 0){
-		snowRef.position.y+=100
-		snowTrack1 = 100
-		//console.log('succ')
-	}
 
-	if(snowTrack2 <= 0){
-		snowRef2.position.y+=100
-		snowTrack2 = 100
-		//console.log('succ')
-	}
 
 
 	//console.log(snowRef.positon.y)
 	//can add better tracking custom for snowfall
+}
+///////////////BEGIN LOAD ROOM 5///////////// (MATTY'S ROOM)
+
+function loadRoom4(){
+
+var groundTex = textureLoader.load('tex/box.jpg', resourceLoaded)
+var groundMat = new THREE.MeshToonMaterial({map: groundTex})
+
+var cubeTex = textureLoader.load('tex/box.jpg', resourceLoaded)
+var cubeMat = new THREE.MeshStandardMaterial({map: cubeTex})
+
+var skyTex = textureLoader.load("tex/sky.jpg", resourceLoaded)
+var skyMat = new THREE.MeshBasicMaterial({
+		map: skyTex,
+		side: THREE.BackSide
+});
+
+var white = new THREE.MeshBasicMaterial( { color: 0x707070  } )
+// load a resource
+
+
+
+
+
+
+//using a while loop because for loop would iterate through everything except what was underneath gLoader and then do that last with i held at 16
+var y = 0
+
+//cloud.position.y = 10
+//var ambLight = new THREE.AmbientLight( 0x101010 ); // soft white light
+//scene.add( ambLight );
+
+var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
+ground = new THREE.Mesh( groundGeometry,  groundMat )
+scene.add( ground )
+
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 )
+//var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
+cube = new THREE.Mesh( geometry, cubeMat )
+scene.add( cube )
+
+
+
+
+
+
+
+var skyGeo = new THREE.BoxGeometry (1000, 1000, 1000)
+skyBox = new THREE.Mesh( skyGeo, skyMat)
+skyBox.position.y=5
+scene.add( skyBox )
+
+
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+lightPos =   new THREE.Vector3(2,10,5)
+directionalLight.position.copy( lightPos)
+scene.add( directionalLight );
+//directionalLight.target = cube
+}
+
+//ANIMATE ROOM 4
+function animateRoom4() {
+	cube.position.y +=0.01
+	cube.position.x -= 0.01
+	cube.rotation.x += 0.01
+	cube.rotation.y += 0.1
+
+}
+
+///////////////BEGIN LOAD ROOM 5///////////// (BEN'S ROOM)
+
+function loadRoom5(){
+
+var groundTex = textureLoader.load('tex/ground.jpg', resourceLoaded)
+var groundMat = new THREE.MeshToonMaterial({map: groundTex})
+
+var cubeTex = textureLoader.load('tex/box.jpg', resourceLoaded)
+var cubeMat = new THREE.MeshStandardMaterial({map: cubeTex})
+
+var skyTex = textureLoader.load("tex/sky.jpg", resourceLoaded)
+var skyMat = new THREE.MeshBasicMaterial({
+		map: skyTex,
+		side: THREE.BackSide
+});
+
+var white = new THREE.MeshBasicMaterial( { color: 0x707070  } )
+// load a resource
+
+
+
+
+
+
+//using a while loop because for loop would iterate through everything except what was underneath gLoader and then do that last with i held at 16
+var y = 0
+
+//cloud.position.y = 10
+//var ambLight = new THREE.AmbientLight( 0x101010 ); // soft white light
+//scene.add( ambLight );
+
+var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
+ground = new THREE.Mesh( groundGeometry,  groundMat )
+scene.add( ground )
+
+
+var geometry = new THREE.BoxGeometry( 1, 1, 1 )
+//var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
+cube = new THREE.Mesh( geometry, cubeMat )
+scene.add( cube )
+
+
+
+
+
+
+
+var skyGeo = new THREE.BoxGeometry (1000, 1000, 1000)
+skyBox = new THREE.Mesh( skyGeo, skyMat)
+skyBox.position.y=5
+scene.add( skyBox )
+
+
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
+lightPos =   new THREE.Vector3(2,10,5)
+directionalLight.position.copy( lightPos)
+scene.add( directionalLight );
+//directionalLight.target = cube
+}
+
+//ANIMATE ROOM 5
+function animateRoom5() {
+	cube.position.y +=0.01
+	cube.position.x -= 0.01
+	cube.rotation.x += 0.01
+	cube.rotation.y += 0.1
+
 }
 
 

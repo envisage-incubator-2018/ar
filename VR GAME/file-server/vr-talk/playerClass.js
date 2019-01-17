@@ -38,12 +38,21 @@ class PlayerClass {
     var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     var material = new THREE.MeshNormalMaterial();
     this.cube = new THREE.Mesh(geometry, material);
+	this.playerCollider = new THREE.Box3().setFromObject(this.cube)
     this.cube.position.set(0, 0, 0);
     this.cube.rotation.set(0, 0, 0);
     this.playerGroup.add(this.cube);
+	//this.playerGroup.add(this.playerCollider);
 
     this.movementSpeed = 0.003;
     this.rotationSpeed = 0.0012;
+	//this.duckLength =0.1;
+	
+	//collision handling
+	this.movedForward = false
+	this.movedBack = false
+	this.movedLeft = false
+	this.movedRight = false
 
     // If player represents client
     if (this.self) {
@@ -51,6 +60,7 @@ class PlayerClass {
       // Create a three.js camera.
       var aspect = window.innerWidth / window.innerHeight;
       this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
+	  this.camera.position.set(0, 1.5, 0 )
 
       // Add audio listener to the camera
       var listener = new THREE.AudioListener();
@@ -64,6 +74,11 @@ class PlayerClass {
 
   }
   update(delta) {
+	this.movedForward = false
+	this.movedBack = false
+	this.movedLeft = false
+	this.movedRight = false
+
 
     //this.playerGroup.translateZ( delta * -0.001 );
     //this.playerGroup.rotateY ( delta * 0.0001 )
@@ -88,17 +103,23 @@ class PlayerClass {
       }
       
     } else {  // Move with keyboard controls
-      if (keyDown["KeyW"]) {
+      
+	  if (keyDown["KeyW"]) {
         this.playerGroup.translateZ( delta * -this.movementSpeed );
+		this.movedForward = true
       }
       if (keyDown["KeyS"]) {
         this.playerGroup.translateZ( delta * this.movementSpeed );
+		this.movedBack=true
+		console.log("movng back")
       }  
       if (keyDown["KeyA"]) {
         this.playerGroup.translateX( delta * -this.movementSpeed );
+		this.movedLeft=true
       }  
       if (keyDown["KeyD"]) {
         this.playerGroup.translateX( delta * this.movementSpeed );
+		this.movedRight=true
       }
       if (keyDown["KeyE"]) {
         this.playerGroup.rotateY( delta * -this.rotationSpeed );
@@ -107,11 +128,15 @@ class PlayerClass {
         this.playerGroup.rotateY ( delta * this.rotationSpeed );
       }
       if (keyDown["Space"]) {
-        this.playerGroup.translateY( delta * this.movementSpeed );
+        //this.playerGroup.translateY( delta * this.movementSpeed );
       }  
       if (keyDown["ShiftLeft"]) {
-        this.playerGroup.translateY( delta * -this.movementSpeed );
+        this.camera.position.set(0, 1.0, 0 )
       }
+	  else{
+		  this.camera.position.set(0, 1.5, 0 )
+	  }
+	  
     }
 
     //console.log(delta)
@@ -124,6 +149,8 @@ class PlayerClass {
     if (vrButton.isPresenting()) {
       this.controls.update();
     }
+	
+	this.playerCollider.setFromObject(this.cube)
   }
   setState(state) {
     this.playerGroup.position.set(state.position.x, state.position.y, state.position.z);
