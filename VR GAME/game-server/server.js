@@ -3,9 +3,9 @@
 	Matty public ip: http://120.153.145.248:8080/
 
 
-	
-	Array containing 
-	
+
+	Array containing
+
 
 	roomList = {
 		"room1": {
@@ -16,7 +16,7 @@
 				}
 			}
 			"objects": {
-				
+
 			}
 		}
 	}
@@ -28,6 +28,7 @@
 
 let Room_Blank = require("./room_blank.js");
 let Room_Soccer = require("./room_soccer.js");
+let Room_Ben = require("./room_ben.js");
 
 
 // List of rooms containing players/objects in them
@@ -38,7 +39,7 @@ let roomList = {
 	"room2": new Room_Blank(),
 	"room3": new Room_Blank(),
 	"room4": new Room_Soccer(),
-	"room5": new Room_Blank()
+	"room5": new Room_Ben()
 };
 
 // List of players with key as socket.id and values as room name string
@@ -60,7 +61,7 @@ setInterval(function() {
 }, 3000);
 
 
-// Listen on port 3000 
+// Listen on port 3000
 let io = require('socket.io').listen(3000);
 io.set("heartbeat interval", 1000);
 
@@ -73,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on("join-room", function (roomName) {
 		console.log("Player " + socket.id + " joining room: " + roomName);
-		
+
 		socket.join(roomName);	// Join the socket room for that room
 		roomList[roomName].addPlayer(socket.id);	// Add player to room class
 
@@ -92,7 +93,7 @@ io.sockets.on('connection', function (socket) {
 			roomList[roomName].setPlayerState(socket.id, playerData);
 		});
 
-		
+
 
 		// If client disconnects, remove them from room and tell other users
 		socket.on('disconnect', function () {
@@ -120,7 +121,7 @@ io.sockets.on('connection', function (socket) {
 setInterval(function() {
 	// Loop through each room and send all players in that room their room state at 60 ticks
 	for (let roomName in roomList) {
-		// First update room 
+		// First update room
 		roomList[roomName].update();
 
 		// Send new room state to all players

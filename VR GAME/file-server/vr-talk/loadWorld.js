@@ -635,6 +635,7 @@ scene.add( cube )
 
 
 
+
 var skyGeo = new THREE.BoxGeometry (1000, 1000, 1000)
 skyBox = new THREE.Mesh( skyGeo, skyMat)
 skyBox.position.y=5
