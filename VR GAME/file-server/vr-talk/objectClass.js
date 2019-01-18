@@ -10,8 +10,19 @@ class ObjectClass {
 
     this.id = objectData.id;
 
-    var geometry = new THREE.SphereGeometry(0.5, 16, 16);
+    this.modelInfo = objectData.modelInfo;
+
+    // Object geometry is based on modelInfo attribute
+    var geometry;
+    if (this.modelInfo.shape == "sphere") {   // Spheres just have a single value as model size
+      geometry = new THREE.SphereGeometry(this.modelInfo.size, 16, 16);
+    } else if (this.modelInfo.shape == "box") {   // Boxes require 3 dimentions of size
+      geometry = new THREE.BoxGeometry(this.modelInfo.size.x, this.modelInfo.size.y, this.modelInfo.size.z)
+    }
+
     var material = new THREE.MeshNormalMaterial();
+
+
     this.threeObject = new THREE.Mesh(geometry, material);
     this.threeObject.position.set(objectData.position.x, objectData.position.y, objectData.position.z);
     this.threeObject.rotation.set(objectData.rotation.x, objectData.rotation.y, objectData.rotation.z);

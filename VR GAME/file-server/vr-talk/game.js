@@ -9,7 +9,7 @@
   - if player is self, set self to current position and add to players list
 
 
-  
+
   Objects are global to all players
   Client recieves initial position of all objects
   Objects is a dictionary of objects that exist in scene
@@ -28,6 +28,12 @@ let socket;
 let players = {};   // Stores a PlayerClass for each player keyed by the players id
 let objects = {};   // Stores an ObjectClass for each object in scene keyed by a custom object id
 
+//Raycasting stuff
+var raycaster = new THREE.Raycaster();
+var rayOriginPos = {x: 0, y: 0};
+var intersects = [];
+
+
 let gamepad;
 let joysticks = {
     "LeftHorizontal" : 0,
@@ -43,6 +49,7 @@ function initGame() {
   let serverIp = ip.substring(0, ip.lastIndexOf(":")) + ":3000";
   console.log("Connecting to game server:", serverIp)
   socket = io.connect(serverIp);
+
 
 
   socket.on('connect', function() {

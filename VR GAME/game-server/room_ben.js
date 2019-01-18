@@ -6,7 +6,7 @@
 
 	A soccer room for example would analyse the position of players and update the position of a soccer ball
 
-	
+
 	Each room is stored as a class on the server
 	Everytime a player sends its state...
 		- a function is run in the room class with this data as the parameter
@@ -17,36 +17,29 @@
 	Server can send a different init-world-state than update-world-state
 		- client will only start recieving update-world-state events after the init-world-state is fired
 		- init should contain extra information about object models for example
-			- also eventually could send world map? 
+			- also eventually could send world map?
 			- might be able to send entire scenes since this message is only transmitted once and its size won't be an issue
 
 
 */
 
-class Room_Blank {
+class Room_Ben {
 	constructor() {
-		
+
 		this.players = {};
 
 		this.objects = {
 			"sphere1": {
 				id: "sphere1",
-				modelInfo: {
-					shape: "sphere",
-					size: 0.5
-				},
 				position: {x:-3,y:3,z:-3},
 				rotation: {x:0,y:0,z:0},
 			},
-			"box1": {
-				id: "box1",
-				modelInfo: {
-					shape: "box",
-					size: {x:0.5,y:0.7,z:1}
-				},
-				position: {x:0,y:2,z:0},
+			"sphere2": {
+				id: "sphere2",
+				position: {x:-6,y:4,z:-3},
 				rotation: {x:0,y:0,z:0},
 			}
+
 		};
 
 
@@ -74,10 +67,10 @@ class Room_Blank {
 	}
 	update() {		// Runs each server tick to update server-side objects
 
-		this.objects["sphere1"].position.x = -3 + Math.sin(new Date().getTime()/1000);
+		this.objects["sphere1"].position.x += -0.001;
 
 	}
 }
 
 
-module.exports = Room_Blank;
+module.exports = Room_Ben;

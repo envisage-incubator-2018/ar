@@ -105,6 +105,15 @@ function beginAnimate() {
 
 // Request animation frame loop function
 function animate(timestamp) {
+  //update the raycasting position
+  raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
+  intersects = raycaster.intersectObjects(scene.children);
+  //console.log(intersects);
+  //for (var i = 0; i < intersects.length; i++) {
+      //iterate through ray collisions here if you want
+  	//}
+
+
   var delta = Math.min(timestamp - lastRenderTime, 500);
   lastRenderTime = timestamp;
 
