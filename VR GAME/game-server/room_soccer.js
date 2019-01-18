@@ -56,7 +56,7 @@ class Room_Soccer {
 	}
 	addPlayer(id) {		// Adds a new player to the room
 		this.players[id] = {
-			position: {x:0, y:0, z:5},
+			position: {x:0, y:1, z:5},
 			rotation: {x:0, y:0, z:0}
 		};
 	}

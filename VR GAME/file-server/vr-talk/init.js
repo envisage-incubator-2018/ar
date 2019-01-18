@@ -3,6 +3,7 @@
 
 // Last time the scene was rendered.
 var lastRenderTime = 0;
+
 // Currently active VRDisplay.
 var vrDisplay;
 
@@ -16,11 +17,8 @@ var vrButton;
 // The player which represents the client themselves
 var selfPlayer;
 
-var chosenRoom;
-
-// Tali collision
-var oldState =[];
-var veryOldState=[];
+var chosenRoom;   // The room number that the player selected
+var room;   // The room class that the player is currently in
 
 // WebRTC stuff
 var oldPosition;
@@ -30,6 +28,7 @@ var local_media_stream;
 var peers = {};
 // Dictionary of PositionalAudio objects in three js [indexed by player id]
 var peer_audio_objects = {};
+
 
 
 function initVR(tempRoom) {
@@ -89,15 +88,71 @@ function initVR(tempRoom) {
     This will prevent errors of textures not being loaded while the game is trying to use them.
   */
 
-  // Loads world (textures, objects, etc)
-  loadWorld();
+
+  // Create the room
+  // This is the list of room and their classes
+  let roomList = [
+    Room0,
+    Room1,
+    Room2,
+    Room3,
+    Room4,
+    Room5,
+    Room6
+  ]
+  room = new roomList[chosenRoom]();
+
+
+
+  //// Do some setup which is the same in every room so I don't need to manually change each room file when a change is made
+  // loadManager tracks which files have been loaded through each of the loaders
+  // Due to OBJLoader.setMaterial being used by multiple loaders at once, the current fix it to have multiple OBJLoader's
+  room.loadManager = new THREE.LoadingManager();    
+  room.textureLoader = new THREE.TextureLoader(room.loadManager);
+  room.objLoader = new THREE.OBJLoader(room.loadManager);
+  room.objLoader2 = new THREE.OBJLoader(room.loadManager);  
+  room.mtlLoader = new THREE.MTLLoader(room.loadManager);
+  room.gltfLoader = new THREE.GLTFLoader(room.loadManager);
+
+  room.loadManager.onProgress = function(url, itemsLoaded, itemsTotal ) {
+    console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+  }
+
+  // After all files have been loaded, loadRoom will run
+  room.loadManager.onLoad = ()=>{
+    console.log("==== Finished loading meshes for room ====")
+    room.loadRoom();
+  }
+
+  // loadManager.onLoad will not trigger if it never needed to load a single resource
+  room.neededResources = false;   // Assume no resources are needed
+  room.loadManager.onStart = ()=>{  // If loadManager starts, resources were needed
+    room.neededResources = true;
+  }
+
+  // Being loading room by creating meshes
+  room.createMeshes();
+
+  // If no resources were needed, manually trigger the room.loadRoom function
+  if (room.neededResources == false) room.loadManager.onLoad();
+
 
   initGame();
-
   initRTC(tempRoom);
-
-  // Animation is triggered elsewhere once everything is loaded
 }
+
+// This function is run once the room is loaded
+function beginAnimate() {
+  // Start rendering
+  navigator.getVRDisplays().then(function(displays) {
+    if (displays.length > 0) {
+      vrDisplay = displays[0];
+      vrDisplay.requestAnimationFrame(animate);
+    }
+  });
+}
+
+
 
 function initRTC(channel) {
   // TODO This is copied from example code
@@ -310,19 +365,14 @@ function onResize(e) {
   selfPlayer.camera.updateProjectionMatrix();
 }
 
-// Starts animation of world
-function beginAnimate() {
-  // Start rendering
-  navigator.getVRDisplays().then(function(displays) {
-    if (displays.length > 0) {
-      vrDisplay = displays[0];
-      vrDisplay.requestAnimationFrame(animate);
-    }
-  });
-}
 
 // Request animation frame loop function
 function animate(timestamp) {
+  var delta = Math.min(timestamp - lastRenderTime, 500);
+  lastRenderTime = timestamp;
+
+
+
   //update the raycasting position
   raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
   intersects = raycaster.intersectObjects(scene.children);
@@ -332,54 +382,14 @@ function animate(timestamp) {
   	//}
 
 
-  var delta = Math.min(timestamp - lastRenderTime, 500);
-  lastRenderTime = timestamp;
-
-  veryOldState = oldState
-  oldState = selfPlayer.getCopyState()
-  selfPlayer.update(delta);
-  colliding=false
-
   //updateGame(delta);
 
+  selfPlayer.update(delta);
 
 
   // Performs local updates on room (objects only visible to local user like snow for example)
-  if(chosenRoom== 1){
-    animateRoom1();
-  }else if(chosenRoom== 2){
-    animateRoom2()
-  }else if(chosenRoom== 3){
-    animateRoom3()
-  }else if(chosenRoom== 4){
-    animateRoom4()
-  }else if(chosenRoom== 5){
-    animateRoom5()
-  }else if(chosenRoom== 6){
-    animateRoom6()
-  }
-
-
-
-  //console.log(colliding)
-
-  if(colliding==true){
-    console.log("colliding: ", colliding)
-    console.log("Old State: ", oldState)
-
-    console.log("Pre-Current State: ",selfPlayer.getCopyState())
-    //var oldState=[0,0,0]
-    //selfPlayer.playerGroup.position.set(0,0,0)
-	  //selfPlayer.setState(oldState)
-    selfPlayer.setCopyState(veryOldState)
-    selfPlayer.playerCollider.setFromObject(this.cube)
-    console.log("Post-Current State: ",selfPlayer.getCopyState())
-
-  }//else{
-    //console.log("Collidinh: ", colliding )
-    //console.log("Pre-Collision Position: ", selfPlayer.getCopyState() )
-
-  //}
+  // The equivilant of the old animate1()...
+  room.updateRoom();
 
 
   // Render the scene from selfPlayers camera view
