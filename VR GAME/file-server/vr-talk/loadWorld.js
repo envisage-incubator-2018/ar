@@ -203,7 +203,7 @@ function loadRoom1(){
   lightPos =   new THREE.Vector3(-40,20,20)
   directionalLight.position.copy( lightPos)
   scene.add( directionalLight );
-  
+
   var light = new THREE.PointLight( 0xffd700, 1, 6 );
   light.position.set(12, 1, 0 );
   scene.add(light)
@@ -343,8 +343,8 @@ function loadRoom2(){
   testBox.position.y+=1
   testBound = new THREE.Box3().setFromObject(testBox)
   scene.add(testBox)
-  
-  
+
+
   var geometry = new THREE.BoxGeometry( 1, 1, 1 )
   //var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
   cube = new THREE.Mesh( geometry, cubeMat )
@@ -378,13 +378,13 @@ function animateRoom2() {
   //console.log("animate room 2")
   //skyBox.rotation.y +=0.001
 
-  
+
   cube.position.y +=0.01
   cube.position.x -= 0.01
   cube.position.z -= 0.02
   cube.rotation.x += 0.01
   cube.rotation.y += 0.1
-  
+
   cubeBound.setFromObject(cube)
   colliding = selfPlayer.playerCollider.intersectsBox(testBound)
 
@@ -625,6 +625,7 @@ var geometry = new THREE.BoxGeometry( 1, 1, 1 )
 //var material = new THREE.MeshBasicMaterial( { color: 0xff0000 })
 cube = new THREE.Mesh( geometry, cubeMat )
 scene.add( cube )
+
 
 
 

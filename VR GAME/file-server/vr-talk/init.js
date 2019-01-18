@@ -33,7 +33,7 @@ function initVR(tempRoom) {
 
   // Create self player
   selfPlayer = new PlayerClass(true);
-  
+
 
   // Apply VR stereo rendering to renderer.
   effect = new THREE.VREffect(renderer);
@@ -102,6 +102,15 @@ function beginAnimate() {
 
 // Request animation frame loop function
 function animate(timestamp) {
+  //update the raycasting position
+  raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
+  intersects = raycaster.intersectObjects(scene.children);
+  //console.log(intersects);
+  //for (var i = 0; i < intersects.length; i++) {
+      //iterate through ray collisions here if you want
+  	//}
+
+
   var delta = Math.min(timestamp - lastRenderTime, 500);
   lastRenderTime = timestamp;
 
@@ -122,11 +131,11 @@ function animate(timestamp) {
   }else if(chosenRoom== 5){
     animateRoom5()
   }
-  
-  
-  
+
+
+
   //console.log(colliding)
-  
+
   if(colliding==true){
 	  if(selfPlayer.movedForward==true){
 		selfPlayer.playerGroup.translateZ( 10* delta * selfPlayer.movementSpeed );
@@ -140,7 +149,7 @@ function animate(timestamp) {
 	   if(selfPlayer.movedRight==true){
 		selfPlayer.playerGroup.translateX( 10* delta * -selfPlayer.movementSpeed );
 	  }
-	  
+
   }
 
 
