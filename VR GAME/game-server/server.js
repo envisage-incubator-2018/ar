@@ -121,15 +121,15 @@ io.sockets.on('connection', function (socket) {
 
 			roomList[roomName]["players"][socket.id]["connected"] = true;
 
-	  });
+		});
 
 		socket.on('relay_data', function(config) {
-      if (config.peer_id in roomList[roomName]["players"]) {
+			if (config.peer_id in roomList[roomName]["players"]) {
 				socketId = config.peer_id;
 				config.peer_id = socket.id;
 				io.to(`${socketId}`).emit(config.ev, config);
-      }
-    });
+			}
+		});
 
 		socket.on("rtc_disconnect", rtc_disconnect);
 
@@ -158,7 +158,7 @@ io.sockets.on('connection', function (socket) {
 			socket.emit("rtc_disconnect");
 
 			roomList[roomName]["players"][socket.id]["connected"] = false;
-	  }
+		}
 
 	});
 
