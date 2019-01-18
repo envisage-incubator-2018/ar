@@ -18,6 +18,8 @@ var selfPlayer;
 
 var chosenRoom;
 
+var oldPosition;
+
 function initVR(tempRoom) {
   chosenRoom = tempRoom
   // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
@@ -33,7 +35,7 @@ function initVR(tempRoom) {
 
   // Create self player
   selfPlayer = new PlayerClass(true);
-  
+
 
   // Apply VR stereo rendering to renderer.
   effect = new THREE.VREffect(renderer);
@@ -105,10 +107,14 @@ function animate(timestamp) {
   var delta = Math.min(timestamp - lastRenderTime, 500);
   lastRenderTime = timestamp;
 
+
+
   selfPlayer.update(delta);
   colliding=false
 
   updateGame(delta);
+
+
 
   // Performs local updates on room (objects only visible to local user like snow for example)
   if(chosenRoom== 1){
@@ -121,31 +127,25 @@ function animate(timestamp) {
     animateRoom4()
   }else if(chosenRoom== 5){
     animateRoom5()
+  }else if(chosenRoom== 6){
+    animateRoom6()
   }
-  
-  
-  
+
+
+
   //console.log(colliding)
-  
+
   if(colliding==true){
-	  if(selfPlayer.movedForward==true){
-		selfPlayer.playerGroup.translateZ( 10* delta * selfPlayer.movementSpeed );
-	  }
-	  if(selfPlayer.movedBack==true){
-		selfPlayer.playerGroup.translateZ( 10* delta * -selfPlayer.movementSpeed );
-	  }
-	  if(selfPlayer.movedLeft==true){
-		selfPlayer.playerGroup.translateX( 10* delta * selfPlayer.movementSpeed );
-	  }
-	   if(selfPlayer.movedRight==true){
-		selfPlayer.playerGroup.translateX( 10* delta * -selfPlayer.movementSpeed );
-	  }
-	  
+    console.log("colliding")
+    console.log(oldState)
+	  selfPlayer.setState(oldState)
+
   }
 
 
   // Render the scene from selfPlayers camera view
   effect.render(scene, selfPlayer.camera);
+  oldState = selfPlayer.getState()
 
   vrDisplay.requestAnimationFrame(animate);
 }

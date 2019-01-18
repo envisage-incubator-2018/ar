@@ -1,5 +1,5 @@
 /*
-  
+
   Each local client generates a player class for all other players in server in server including themselves
 
   The clients local version of players stores a list of player classes
@@ -11,7 +11,7 @@
   The self player is the player class representing the client themselves
   This player class can have its rotation/position extracted through a function which is then sent to server and distributed to all players
     - rotation extraction function must take into account rotation of whole player + the VR rotation
-  
+
 
   All players also have a load function which loads them into the scene
    - this involes adding their plysical body parts into the scene
@@ -22,7 +22,7 @@
   Players also have a secondary rotation which represent direction body is facing
     - Both start off facing same direction, but as head rotates the secondary rotation follows when its difference to the head rotation passes a threshold
 
-  
+
   //{"position": {x:0,y:0,z:0}, "rotation": {x:0,y:0,z:0}}
 
 */
@@ -99,7 +99,7 @@ class PlayerClass {
 
 			}
 			if (Math.abs(gamepad.axes[joysticks["RightVertical"]]) > 0.05) {
-				this.playerGroup.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);       
+				this.playerGroup.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);
 			}
 
 		} else {  // Move with keyboard controls
@@ -112,11 +112,11 @@ class PlayerClass {
 				this.playerGroup.translateZ( delta * this.movementSpeed );
 				this.movedBack=true
 				//console.log("movng back")
-			}  
+			}
 			if (keyDown["KeyA"]) {
 				this.playerGroup.translateX( delta * -this.movementSpeed );
 				this.movedLeft=true
-			}  
+			}
 			if (keyDown["KeyD"]) {
 				this.playerGroup.translateX( delta * this.movementSpeed );
 				this.movedRight=true
@@ -129,7 +129,7 @@ class PlayerClass {
 			}
 			if (keyDown["Space"]) {
 				//this.playerGroup.translateY( delta * this.movementSpeed );
-			}  
+			}
 			if (keyDown["ShiftLeft"]) {
 				this.camera.position.set(0, 1.0, 0 )
 			}
@@ -161,8 +161,8 @@ class PlayerClass {
 		return {
 			"position": this.playerGroup.position,
 			"rotation": {
-				x:this.playerGroup.rotation.x + this.camera.rotation.x, 
-				y:this.playerGroup.rotation.y + this.camera.rotation.y, 
+				x:this.playerGroup.rotation.x + this.camera.rotation.x,
+				y:this.playerGroup.rotation.y + this.camera.rotation.y,
 				z:this.playerGroup.rotation.z + this.camera.rotation.z
 			}
 		}
