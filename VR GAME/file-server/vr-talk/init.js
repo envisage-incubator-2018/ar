@@ -18,7 +18,8 @@ var selfPlayer;
 
 var chosenRoom;
 
-var oldPosition;
+var oldState =[];
+var veryOldState=[];
 
 function initVR(tempRoom) {
   chosenRoom = tempRoom
@@ -107,12 +108,12 @@ function animate(timestamp) {
   var delta = Math.min(timestamp - lastRenderTime, 500);
   lastRenderTime = timestamp;
 
-
-
+  veryOldState = oldState
+  oldState = selfPlayer.getCopyState()
   selfPlayer.update(delta);
   colliding=false
 
-  updateGame(delta);
+  //updateGame(delta);
 
 
 
@@ -136,16 +137,27 @@ function animate(timestamp) {
   //console.log(colliding)
 
   if(colliding==true){
-    console.log("colliding")
-    console.log(oldState)
-	  selfPlayer.setState(oldState)
+    console.log("colliding: ", colliding)
+    console.log("Old State: ", oldState)
 
-  }
+    console.log("Pre-Current State: ",selfPlayer.getCopyState())
+    //var oldState=[0,0,0]
+    //selfPlayer.playerGroup.position.set(0,0,0)
+	  //selfPlayer.setState(oldState)
+    selfPlayer.setCopyState(veryOldState)
+    selfPlayer.playerCollider.setFromObject(this.cube)
+    console.log("Post-Current State: ",selfPlayer.getCopyState())
+
+  }//else{
+    //console.log("Collidinh: ", colliding )
+    //console.log("Pre-Collision Position: ", selfPlayer.getCopyState() )
+
+  //}
 
 
   // Render the scene from selfPlayers camera view
   effect.render(scene, selfPlayer.camera);
-  oldState = selfPlayer.getState()
+
 
   vrDisplay.requestAnimationFrame(animate);
 }

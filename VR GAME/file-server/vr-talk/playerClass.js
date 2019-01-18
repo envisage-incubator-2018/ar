@@ -63,8 +63,8 @@ class PlayerClass {
 			this.camera.position.set(0, 1.5, 0 )
 
 			// Add audio listener to the camera
-			var listener = new THREE.AudioListener();
-			this.camera.add(listener);
+			//var listener = new THREE.AudioListener();
+			//this.camera.add(listener);
 
 			this.controls = new THREE.VRControls(this.camera);
 			//this.controls.standing = true;
@@ -155,6 +155,18 @@ class PlayerClass {
 	setState(state) {
 		this.playerGroup.position.set(state.position.x, state.position.y, state.position.z);
 		this.playerGroup.rotation.set(state.rotation.x, state.rotation.y, state.rotation.z);
+	}
+	getCopyState(){
+		var xPos=this.playerGroup.position.x
+		var yPos=this.playerGroup.position.y
+		var zPos=this.playerGroup.position.z
+		var posArray=[xPos, yPos, zPos]
+		return(posArray)
+
+	}
+	setCopyState(oldState){
+		this.playerGroup.position.set(oldState[0], oldState[1], oldState[2])
+
 	}
 	getState() {
 		//return {"position": this.playerGroup.position, "rotation": {x:0,y:0,z:0}};
