@@ -44,7 +44,7 @@ class Room_Blank {
 					shape: "box",
 					size: {x:0.5,y:0.7,z:1}
 				},
-				position: {x:0,y:2,z:0},
+				position: {x:-3,y:3,z:0},
 				rotation: {x:0,y:0,z:0},
 			}
 		};

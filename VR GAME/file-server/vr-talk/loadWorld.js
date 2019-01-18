@@ -661,7 +661,7 @@ function animateRoom5() {
 
 function loadRoom6(){
 
-var groundTex = textureLoader.load('tex/sky.jpg', resourceLoaded)
+var groundTex = textureLoader.load('tex/snow/sky.jpg', resourceLoaded)
 var groundMat = new THREE.MeshToonMaterial({map: groundTex})
 
 var cubeTex = textureLoader.load('tex/box.jpg', resourceLoaded)

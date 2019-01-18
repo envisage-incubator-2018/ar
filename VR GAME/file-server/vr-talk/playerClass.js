@@ -60,11 +60,11 @@ class PlayerClass {
 			// Create a three.js camera.
 			var aspect = window.innerWidth / window.innerHeight;
 			this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 10000);
-			this.camera.position.set(0, 1.5, 0 )
 
 			// Add audio listener to the camera
-			//var listener = new THREE.AudioListener();
-			//this.camera.add(listener);
+			this.listener = new THREE.AudioListener();
+			this.camera.add(this.listener);
+
 
 			this.controls = new THREE.VRControls(this.camera);
 			//this.controls.standing = true;
@@ -128,25 +128,21 @@ class PlayerClass {
 				this.playerGroup.rotateY ( delta * this.rotationSpeed );
 			}
 			if (keyDown["Space"]) {
-				//this.playerGroup.translateY( delta * this.movementSpeed );
+				this.playerGroup.translateY( delta * this.movementSpeed );
 			}
 			if (keyDown["ShiftLeft"]) {
 				this.playerGroup.translateY( delta * -this.movementSpeed );
 			}
-      if (keyDown["KeyH"]) {
+			if (keyDown["KeyH"]) {
 
-        for (var i = 0; i < intersects.length; i++) {
-        //  if (intersects[i].object.position.y != 5) {
-            intersects[0].object.material.color.set(0xff0000);
-        //  }
+				for (var i = 0; i < intersects.length; i++) {
+					//  if (intersects[i].object.position.y != 5) {
+					intersects[0].object.material.color.set(0xff0000);
+					//  }
 
-            console.log(intersects);
-          }
-      }
-			else{
-				this.camera.position.set(0, 1.5, 0 )
+					console.log(intersects);
+				}
 			}
-
 		}
 
 		//console.log(delta)

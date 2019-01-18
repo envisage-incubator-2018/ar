@@ -40,7 +40,8 @@ let roomList = {
 	"room2": new Room_Blank(),
 	"room3": new Room_Pong(),
 	"room4": new Room_Soccer(),
-	"room5": new Room_Ben()
+	"room5": new Room_Ben(),
+	"room6": new Room_Blank()
 };
 
 // List of players with key as socket.id and values as room name string
@@ -88,18 +89,57 @@ io.sockets.on('connection', function (socket) {
 		// Tells all users in room that a user connected
 		socket.to(roomName).emit("user-connected", socket.id);
 
-		// Wait for client to send their own state and then update players state in room
+		// Wait for client to send their own state
 		socket.on('update-state', function (playerData) {
+
+			// Set players updated position in room
 			let roomName = playerList[socket.id];
 			roomList[roomName].setPlayerState(socket.id, playerData);
 		});
 
+		// RTC event handlers
+		socket.emit("rtc_connect");
 
+		socket.on("rtc_join", function(roomName) {
+			roomName = "room" + roomName;
+			if (roomList[roomName]["players"][socket.id]["connected"]) {
+				// Disconnect from the old channel
+				console.log("disconnecting rtc in join event");
+				rtc_disconnect();
+			}
+
+			console.log("Connecting a new RTC user");
+
+			// Tell all of the other clients to open a connection to this client
+			io.to(roomName).emit("add_rtc_peer", {"id" : socket.id, "make_offer" : false});
+			// Tell this client to open WebRTC connections
+			for (id in roomList[roomName]["players"]) {
+				if (id != socket.id) {
+					socket.emit("add_rtc_peer", {"id" : id, "make_offer" : true});
+				}
+			}
+
+			roomList[roomName]["players"][socket.id]["connected"] = true;
+
+		});
+
+		socket.on('relay_data', function(config) {
+			if (config.peer_id in roomList[roomName]["players"]) {
+				socketId = config.peer_id;
+				config.peer_id = socket.id;
+				io.to(`${socketId}`).emit(config.ev, config);
+			}
+		});
+
+		socket.on("rtc_disconnect", rtc_disconnect);
 
 		// If client disconnects, remove them from room and tell other users
 		socket.on('disconnect', function () {
 			let roomName = playerList[socket.id];
 			console.log("Player " + socket.id + " disconnected from room " + roomName);
+
+			// Disconnect the RTC connection
+			rtc_disconnect();
 
 			// Remove player from room
 			roomList[roomName].removePlayer(socket.id);
@@ -111,11 +151,18 @@ io.sockets.on('connection', function (socket) {
 			socket.to(roomName).emit("user-disconnected", socket.id);
 		});
 
+		function rtc_disconnect() {
+			// Tell all of the other clients to close the connection to this client
+			io.to(roomName).emit("remove_rtc_peer", socket.id);
+			// Tell this client to close all WebRTC connections
+			socket.emit("rtc_disconnect");
+
+			roomList[roomName]["players"][socket.id]["connected"] = false;
+		}
+
 	});
 
-
 });
-
 
 
 // Server-side update function
