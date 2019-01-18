@@ -2,28 +2,11 @@
 
 
 
-	Each room follows its own update function
-
-	A soccer room for example would analyse the position of players and update the position of a soccer ball
-
-	
-	Each room is stored as a class on the server
-	Everytime a player sends its state...
-		- a function is run in the room class with this data as the parameter
-		- this function updates the rooms stored version of the player
-	Each server tick...
-		- server sends the required information of each object to the player
-
-	Server can send a different init-world-state than update-world-state
-		- client will only start recieving update-world-state events after the init-world-state is fired
-		- init should contain extra information about object models for example
-			- also eventually could send world map? 
-			- might be able to send entire scenes since this message is only transmitted once and its size won't be an issue
 
 
 */
 
-class Room_Soccer {
+class Room_Pong {
 	constructor() {
 		
 		this.players = {};
@@ -39,7 +22,26 @@ class Room_Soccer {
 				rotation: {x:0,y:0,z:0},
 				velocity: {x:0,y:0,z:0}
 			},
+			"paddle1": {
+				id: "paddle1",
+				modelInfo: {
+					shape: "box",
+					size: {x:1,y:0.5,z:0.2}
+				},
+				position: {x:0,y:0.5,z:10},
+				rotation: {x:0,y:0,z:0},
+			},
+			"paddle2": {
+				id: "paddle2",
+				modelInfo: {
+					shape: "box",
+					size: {x:1,y:0.5,z:0.2}
+				},
+				position: {x:0,y:0.5,z:-10},
+				rotation: {x:0,y:0,z:0},
+			}
 		};
+
 
 	}
 	getRoomState() {	// Gets the room state to be sent to each client every tick
@@ -66,7 +68,6 @@ class Room_Soccer {
 	update() {		// Runs each server tick to update server-side objects
 		let delta = 1/60;
 		let ball = this.objects["ball"];
-		let ballSize = ball.modelInfo.size;
 
 		// Make each player apply a force to ball
 		for (let id in this.players) {
@@ -88,20 +89,20 @@ class Room_Soccer {
 		ball.position.z += ball.velocity.z * delta;
 
 		// Keep ball inside arena
-		if (ball.position.x > 10 - ballSize) {
-			ball.position.x = 10 - ballSize;
+		if (ball.position.x > 10 - this.ballSize) {
+			ball.position.x = 10 - this.ballSize;
 			ball.velocity.x *= -1;
 		}
-		if (ball.position.x < -10 + ballSize) {
-			ball.position.x = -10 + ballSize;
+		if (ball.position.x < -10 + this.ballSize) {
+			ball.position.x = -10 + this.ballSize;
 			ball.velocity.x *= -1;
 		}
-		if (ball.position.z > 15 - ballSize) {
-			ball.position.z = 15 - ballSize;
+		if (ball.position.z > 15 - this.ballSize) {
+			ball.position.z = 15 - this.ballSize;
 			ball.velocity.z *= -1;
 		}
-		if (ball.position.z < -15 + ballSize) {
-			ball.position.z = -15 + ballSize;
+		if (ball.position.z < -15 + this.ballSize) {
+			ball.position.z = -15 + this.ballSize;
 			ball.velocity.z *= -1;
 		}
 
@@ -118,4 +119,4 @@ function distBetweenXZ(a,b) {	// Returns distance between two vectors across XZ 
 	return Math.hypot(a.x-b.x,a.z-b.z);
 }
 
-module.exports = Room_Soccer;
+module.exports = Room_Pong;
