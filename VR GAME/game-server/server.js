@@ -26,6 +26,7 @@
 
 
 
+let Room_Empty = require("./room_empty.js");
 let Room_Blank = require("./room_blank.js");
 let Room_Soccer = require("./room_soccer.js");
 let Room_Ben = require("./room_ben.js");
@@ -36,7 +37,7 @@ let Room_Pong = require("./room_pong.js");
 // Players contain position/rotation information
 // Objects are objects in the room with position/rotation that is global to all players in that room
 let roomList = {
-	"room0": new Room_Blank(),
+	"room0": new Room_Empty(),
 	"room1": new Room_Blank(),
 	"room2": new Room_Blank(),
 	"room3": new Room_Pong(),

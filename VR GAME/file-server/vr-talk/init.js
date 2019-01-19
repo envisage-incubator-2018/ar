@@ -92,7 +92,7 @@ function initVR(tempRoom) {
   // Create the room
   // This is the list of room and their classes
   let roomList = [
-    Room0,
+    Room_Music,
     Room1,
     Room2,
     Room3,
@@ -113,6 +113,8 @@ function initVR(tempRoom) {
   room.objLoader2 = new THREE.OBJLoader(room.loadManager);  
   room.mtlLoader = new THREE.MTLLoader(room.loadManager);
   room.gltfLoader = new THREE.GLTFLoader(room.loadManager);
+  room.fileLoader = new THREE.FileLoader(room.loadManager);
+  room.audioLoader = new THREE.AudioLoader(room.loadManager);
 
   room.loadManager.onProgress = function(url, itemsLoaded, itemsTotal ) {
     console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
