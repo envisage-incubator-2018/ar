@@ -108,14 +108,14 @@ class Room_Music {
 
 		// Create lots of sticks to bob up and down
 		this.stickList = [];
+		this.stickRadius = 10;
 		this.stick.position.y = -5;
 		for (let i=0; i<this.songArray[0].length; i++) {
 			let stickClone = this.stick.clone();
 			this.stickList.push(stickClone)
 			let stickAngle = Math.PI*2 * (i/this.songArray[0].length);
-			let stickRadius = 10;
-			stickClone.position.x = stickRadius * Math.cos(stickAngle);
-			stickClone.position.z = stickRadius * Math.sin(stickAngle);
+			stickClone.position.x = this.stickRadius * Math.cos(stickAngle);
+			stickClone.position.z = this.stickRadius * Math.sin(stickAngle);
 			scene.add( stickClone )
 		}
 
@@ -139,6 +139,11 @@ class Room_Music {
 			let transformIndex = Math.floor(this.songTime / (60*this.transformSeperation));
 			for (let i=0; i<this.stickList.length; i++) {
 				this.stickList[i].position.y = -5 + 10*this.songArray[transformIndex][i];
+
+				// Rotate them all a bit
+				let stickAngle = Math.PI*2 * (i/this.stickList.length) + this.songTime/1000;
+				this.stickList[i].position.x = this.stickRadius * Math.cos(stickAngle);
+				this.stickList[i].position.z = this.stickRadius * Math.sin(stickAngle);
 			}
 
 		}
