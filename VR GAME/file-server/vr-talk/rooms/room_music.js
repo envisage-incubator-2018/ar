@@ -16,14 +16,19 @@ class Room_Music {
 		this.pointLight = new THREE.PointLight( 0xffd700, 1, 20 );
 
 		// Create skybox
-		this.textureLoader.load("tex/sky.jpg", (skyTex)=>{
-			var skyMat = new THREE.MeshBasicMaterial({
-				map: skyTex,
-				side: THREE.BackSide
+		this.textureLoader.load('tex/snow/sky.jpg', (skyTex)=>{
+			var skyMat = new THREE.MeshToonMaterial({map: skyTex});
+
+			// Creates sky mesh
+			this.objLoader.load('mod/stars.obj', (skyBox)=>{
+				this.skyBox = skyBox
+				this.skyBox.traverse((node)=>{
+					if (node.isMesh) node.material = skyMat
+				})
 			});
-			var skyGeo = new THREE.BoxGeometry (1000, 1000, 1000)
-			this.skyBox = new THREE.Mesh( skyGeo, skyMat)
 		})
+
+
 
 		// Create ground mesh
 		this.textureLoader.load('tex/ground.jpg', (groundTex)=>{
