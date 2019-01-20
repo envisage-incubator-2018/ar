@@ -127,6 +127,12 @@ class PlayerClass {
 			if (keyDown["KeyQ"]) {
 				this.playerGroup.rotateY ( delta * this.rotationSpeed );
 			}
+			if (keyDown["KeyR"]) {
+				this.playerGroup.rotateX( delta * this.rotationSpeed );
+			}
+			if (keyDown["KeyF"]) {
+				this.playerGroup.rotateX( delta * -this.rotationSpeed );
+			}
 			if (keyDown["Space"]) {
 				this.playerGroup.translateY( delta * this.movementSpeed );
 			}
