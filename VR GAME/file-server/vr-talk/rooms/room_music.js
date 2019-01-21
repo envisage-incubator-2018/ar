@@ -91,8 +91,10 @@ class Room_Music {
 
 		// Add ground
 		scene.add( this.ground )
-
-
+	
+		////Collision stuff
+		//Collision array
+		this.thingsThatCollide =[];
 
 		/// Make a song player and stuff
 
@@ -152,7 +154,13 @@ class Room_Music {
 			}
 
 		}
-
+		
+		//testing collision(remember to update collision boxes)
+		colliding=false
+		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
+			colliding = selfPlayer.playerCollider.intersectsBox(this.thingsThatCollide[i])
+			//console.log(i, colliding)
+		}
 
 	}
 }

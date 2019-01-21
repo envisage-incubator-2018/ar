@@ -85,10 +85,14 @@ class Room2 {
 		// Adds ground
 		scene.add( this.ground );
 		
-		this.thingsThatCollide =[];
+		
+		
+		
 		
 
 		////Collision stuff
+		//Collision array
+		this.thingsThatCollide =[];
 		//Create meshes
 		this.cubeBound = new THREE.Box3().setFromObject(this.cube)
 		this.testBound = new THREE.Box3().setFromObject(this.testBox)
@@ -149,14 +153,7 @@ class Room2 {
 			}
 		}
 
-
-
-		// Tali's collision code
-		// It seems to work for what it is, if you rotate around a little you can usually get out of the collision
-		// I think the only reason you can do that though is because you are a cube and rotating can physically move you out of the box without actually changing position
-		//re:I think you are wrong for the first part and right for the second, collision also needs to be global so I moved it back to init
-		//also it broke because the player was spawning inside of a collider which was previously untested
-
+		//Updating collision boxes every tick
 		this.cubeBound.setFromObject(this.cube)
 		this.testBound.setFromObject(this.testBox)
 		
