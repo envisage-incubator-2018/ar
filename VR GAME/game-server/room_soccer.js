@@ -31,14 +31,15 @@ class Room_Soccer {
 		this.objects = {
 			"ball": {
 				id: "ball",
+				modelInfo: {
+					shape: "sphere",
+					size: 0.5
+				},
 				position: {x:0,y:0.5,z:0},
 				rotation: {x:0,y:0,z:0},
 				velocity: {x:0,y:0,z:0}
-			}
+			},
 		};
-
-		this.ballSize = 0.5;
-
 
 	}
 	getRoomState() {	// Gets the room state to be sent to each client every tick
@@ -55,7 +56,7 @@ class Room_Soccer {
 	}
 	addPlayer(id) {		// Adds a new player to the room
 		this.players[id] = {
-			position: {x:0, y:0, z:5},
+			position: {x:0, y:1, z:5},
 			rotation: {x:0, y:0, z:0}
 		};
 	}
@@ -65,6 +66,7 @@ class Room_Soccer {
 	update() {		// Runs each server tick to update server-side objects
 		let delta = 1/60;
 		let ball = this.objects["ball"];
+		let ballSize = ball.modelInfo.size;
 
 		// Make each player apply a force to ball
 		for (let id in this.players) {
@@ -86,20 +88,20 @@ class Room_Soccer {
 		ball.position.z += ball.velocity.z * delta;
 
 		// Keep ball inside arena
-		if (ball.position.x > 10 - this.ballSize) {
-			ball.position.x = 10 - this.ballSize;
+		if (ball.position.x > 10 - ballSize) {
+			ball.position.x = 10 - ballSize;
 			ball.velocity.x *= -1;
 		}
-		if (ball.position.x < -10 + this.ballSize) {
-			ball.position.x = -10 + this.ballSize;
+		if (ball.position.x < -10 + ballSize) {
+			ball.position.x = -10 + ballSize;
 			ball.velocity.x *= -1;
 		}
-		if (ball.position.z > 15 - this.ballSize) {
-			ball.position.z = 15 - this.ballSize;
+		if (ball.position.z > 15 - ballSize) {
+			ball.position.z = 15 - ballSize;
 			ball.velocity.z *= -1;
 		}
-		if (ball.position.z < -15 + this.ballSize) {
-			ball.position.z = -15 + this.ballSize;
+		if (ball.position.z < -15 + ballSize) {
+			ball.position.z = -15 + ballSize;
 			ball.velocity.z *= -1;
 		}
 

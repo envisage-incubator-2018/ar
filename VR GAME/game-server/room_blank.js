@@ -31,7 +31,20 @@ class Room_Blank {
 		this.objects = {
 			"sphere1": {
 				id: "sphere1",
+				modelInfo: {
+					shape: "sphere",
+					size: 0.5
+				},
 				position: {x:-3,y:3,z:-3},
+				rotation: {x:0,y:0,z:0},
+			},
+			"box1": {
+				id: "box1",
+				modelInfo: {
+					shape: "box",
+					size: {x:0.5,y:0.7,z:1}
+				},
+				position: {x:-3,y:3,z:0},
 				rotation: {x:0,y:0,z:0},
 			}
 		};

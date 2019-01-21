@@ -31,15 +31,22 @@ class Room_Ben {
 		this.objects = {
 			"sphere1": {
 				id: "sphere1",
+				modelInfo: {
+					shape: "sphere",
+					size: 0.5
+				},
 				position: {x:-3,y:3,z:-3},
 				rotation: {x:0,y:0,z:0},
 			},
 			"sphere2": {
 				id: "sphere2",
+				modelInfo: {
+					shape: "sphere",
+					size: 0.5
+				},
 				position: {x:-6,y:4,z:-3},
 				rotation: {x:0,y:0,z:0},
 			}
-
 		};
 
 
