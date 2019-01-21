@@ -20,6 +20,11 @@ var selfPlayer;
 var chosenRoom;   // The room number that the player selected
 var room;   // The room class that the player is currently in
 
+//colliding is global
+var colliding = false;
+var thingsThatCollide =[];
+
+
 // WebRTC stuff
 var oldPosition;
 // this client's microphone / webcam
@@ -141,7 +146,7 @@ function initVR(chosenRoom) {
 
 
   initGame();
-  initRTC(tempRoom);
+  initRTC(chosenRoom);
 }
 
 // This function is run once the room is loaded
@@ -383,7 +388,16 @@ function animate(timestamp) {
   //for (var i = 0; i < intersects.length; i++) {
       //iterate through ray collisions here if you want
   	//}
+	
+	
+	
+	if (colliding) {
+		selfPlayer.setCopyState(selfPlayer.veryOldState);
+	}
 
+	// Store player state ready for next update cycle
+	selfPlayer.veryOldState =selfPlayer.oldState
+	selfPlayer.oldState = selfPlayer.getCopyState();
 
   //updateGame(delta);
 
