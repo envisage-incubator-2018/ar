@@ -117,10 +117,10 @@ function initVR(roomNum) {
   //// Do some setup which is the same in every room so I don't need to manually change each room file when a change is made
   // loadManager tracks which files have been loaded through each of the loaders
   // Due to OBJLoader.setMaterial being used by multiple loaders at once, the current fix it to have multiple OBJLoader's
-  room.loadManager = new THREE.LoadingManager();    
+  room.loadManager = new THREE.LoadingManager();
   room.textureLoader = new THREE.TextureLoader(room.loadManager);
   room.objLoader = new THREE.OBJLoader(room.loadManager);
-  room.objLoader2 = new THREE.OBJLoader(room.loadManager);  
+  room.objLoader2 = new THREE.OBJLoader(room.loadManager);
   room.mtlLoader = new THREE.MTLLoader(room.loadManager);
   room.gltfLoader = new THREE.GLTFLoader(room.loadManager);
   room.fileLoader = new THREE.FileLoader(room.loadManager);
@@ -388,13 +388,22 @@ function animate(timestamp) {
   //update the raycasting position
   raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
   intersects = raycaster.intersectObjects(scene.children);
+
   //console.log(intersects);
   //for (var i = 0; i < intersects.length; i++) {
       //iterate through ray collisions here if you want
   	//}
-	
-	
-	
+
+    if (intersects[0].object.userData.Selectable){
+      if (intersects[0].distance <= intersects[0].object.userData.ActivationDistance){
+        console.log(intersects[0].object.userData.SelectTimer)
+        intersects[0].object.userData.SelectTimer+= delta/1000
+      }
+    }
+
+
+
+
 	if (colliding) {
 		selfPlayer.setCopyState(selfPlayer.veryOldState);
 	}

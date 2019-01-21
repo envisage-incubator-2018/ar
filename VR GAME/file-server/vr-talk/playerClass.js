@@ -137,7 +137,7 @@ class PlayerClass {
 
 				for (var i = 0; i < intersects.length; i++) {
 					//  if (intersects[i].object.position.y != 5) {
-					intersects[0].object.material.color.set(0xff0000);
+					//     intersects[0].object.material.color.set(0xff0000);
 					//  }
 
 					console.log(intersects);

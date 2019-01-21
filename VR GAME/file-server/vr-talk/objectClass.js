@@ -1,5 +1,5 @@
 /*
-  
+
 
 
 */
@@ -27,6 +27,9 @@ class ObjectClass {
     this.threeObject.position.set(objectData.position.x, objectData.position.y, objectData.position.z);
     this.threeObject.rotation.set(objectData.rotation.x, objectData.rotation.y, objectData.rotation.z);
 
+    //this is the variable that we can modify & stuff
+    //has no effect on the object, but can be referenced for things
+    this.threeObject.userData = objectData;
     scene.add(this.threeObject);
 
   }

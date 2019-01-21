@@ -35,8 +35,12 @@ class Room_Ben {
 					shape: "sphere",
 					size: 0.5
 				},
-				position: {x:-3,y:3,z:-3},
+				position: {x:-3,y:2,z:-3},
 				rotation: {x:0,y:0,z:0},
+				Selectable: 1,
+				SelectTimer: 0,
+				SelectThreshold: 3,
+				ActivationDistance: 5
 			},
 			"sphere2": {
 				id: "sphere2",
@@ -46,8 +50,26 @@ class Room_Ben {
 				},
 				position: {x:-6,y:4,z:-3},
 				rotation: {x:0,y:0,z:0},
-			}
-		};
+				Selectable: 1,
+				SelectTimer: 0,
+				SelectThreshold: 3,
+				ActivationDistance: 5
+			},
+
+		"box1": {
+			id: "box1",
+			modelInfo: {
+				shape: "box",
+				size: [0.5, 0.5, 0.5]
+			},
+			position: {x:-6,y:4,z:-3},
+			rotation: {x:0,y:0,z:0},
+			Selectable: 1,
+			SelectTimer: 0,
+			SelectThreshold: 3,
+			ActivationDistance: 5
+		}
+	};
 
 
 	}
