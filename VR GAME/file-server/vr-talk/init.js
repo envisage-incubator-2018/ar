@@ -34,9 +34,13 @@ var peers = {};
 // Dictionary of PositionalAudio objects in three js [indexed by player id]
 var peer_audio_objects = {};
 
+// Store a global version of chosen room so socket know which room to join
+var chosenRoom = -1;
 
 
-function initVR(chosenRoom) {
+function initVR(roomNum) {
+  chosenRoom = roomNum;
+
   // Removes buttons
   document.getElementById("roomCreate").parentNode.removeChild(document.getElementById("roomCreate"));
 
