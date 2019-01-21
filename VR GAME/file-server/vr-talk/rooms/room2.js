@@ -84,18 +84,35 @@ class Room2 {
 
 		// Adds ground
 		scene.add( this.ground );
+		
+		this.thingsThatCollide =[];
+		
 
-
-		// Cube stuff
+		////Collision stuff
+		//Create meshes
 		this.cubeBound = new THREE.Box3().setFromObject(this.cube)
+		this.testBound = new THREE.Box3().setFromObject(this.testBox)
+		
+		
+		//manipulate
 		this.cube.position.x = 2
-		scene.add( this.cube )
-
 		this.testBox.position.z-=2
 		this.testBox.position.y+=1
-		this.testBound = new THREE.Box3().setFromObject(this.testBox)
+		
+		//add to array
+		this.thingsThatCollide.push(this.cubeBound)
+		this.thingsThatCollide.push(this.testBound)
+		
+		//add to scene
+		scene.add( this.cube )
 		scene.add( this.testBox )
+		
 
+		
+		
+		
+		
+		
 
 		// Create a bunch of clouds
 		this.cloudMoveSpeed = 0.01;
@@ -112,10 +129,6 @@ class Room2 {
 		}
 
 
-
-		// Tali's collision variables
-		this.oldState = selfPlayer.getCopyState();
-		this.colliding = false
 
 		beginAnimate();
 	}
@@ -145,14 +158,15 @@ class Room2 {
 		//also it broke because the player was spawning inside of a collider which was previously untested
 
 		this.cubeBound.setFromObject(this.cube)
+		this.testBound.setFromObject(this.testBox)
 		
-		
-		colliding = selfPlayer.playerCollider.intersectsBox(this.testBound) || selfPlayer.playerCollider.intersectsBox(this.cubeBound)
-	
-		
+		colliding=false
+		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
+			colliding = selfPlayer.playerCollider.intersectsBox(this.thingsThatCollide[i])
+			//console.log(i, colliding)
+		}
 
 
 	}
 }
-
 
