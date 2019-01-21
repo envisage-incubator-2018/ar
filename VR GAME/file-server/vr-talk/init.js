@@ -31,11 +31,9 @@ var peer_audio_objects = {};
 
 
 
-function initVR(tempRoom) {
+function initVR(chosenRoom) {
   // Removes buttons
   document.getElementById("roomCreate").parentNode.removeChild(document.getElementById("roomCreate"));
-
-  chosenRoom = tempRoom
 
   // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
   // Only enable it if you actually need to.
