@@ -193,7 +193,7 @@ class Room1 {
 		//console.log("Updating room")
 
 
-		// Spin cube
+		// Spin and move cube
 		this.cube.position.y +=0.01
 		this.cube.position.x -= 0.01
 		this.cube.rotation.x += 0.01
