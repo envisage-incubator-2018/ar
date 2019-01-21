@@ -26,10 +26,15 @@ class Room3 {
 					if (node.isMesh) node.material = skyMat
 				})
 			});
-
-			// Creates ground mesh
-			var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
-			this.ground = new THREE.Mesh( groundGeometry, skyMat )
+			
+		//dummy box
+		var testBoxGeo = new THREE.BoxGeometry(4,4,10)
+		this.testBox =new THREE.Mesh(testBoxGeo, skyMat)
+		
+		
+		// Creates ground mesh
+		var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
+		this.ground = new THREE.Mesh( groundGeometry, skyMat )
 
 		})
 
@@ -44,6 +49,10 @@ class Room3 {
 	loadRoom() {
 	
 		console.log("Loading room")
+		//creating object
+		this.testBox.position.x=4
+		this.testBound = new THREE.Box3().setFromObject(this.testBox)
+		scene.add(this.testBox)
 
 		// Adds a light to the scene
 		let lightPos = new THREE.Vector3(2,10,5)
@@ -56,7 +65,11 @@ class Room3 {
 
 		// Add ground
 		scene.add( this.ground )
-
+		
+		////Collision stuff
+		//Collision array
+		this.thingsThatCollide =[];
+		this.thingsThatCollide.push(this.testBound)
 
 		beginAnimate();
 	}
@@ -64,6 +77,12 @@ class Room3 {
 		
 		this.starBox.rotation.z +=0.002
 		
+		//testing collision(remember to update collision boxes)
+		colliding=false
+		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
+			colliding = selfPlayer.playerCollider.intersectsBox(this.thingsThatCollide[i])
+			//console.log(i, colliding)
+		}
 	}
 }
 
