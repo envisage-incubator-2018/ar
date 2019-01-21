@@ -22,7 +22,7 @@ var room;   // The room class that the player is currently in
 
 //colliding is global
 var colliding = false;
-var thingsThatCollide =[];
+
 
 
 // WebRTC stuff
