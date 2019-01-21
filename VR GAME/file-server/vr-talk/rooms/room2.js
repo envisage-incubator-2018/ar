@@ -47,6 +47,7 @@ class Room2 {
 			this.cube = new THREE.Mesh( geometry, cubeMat )
 
 			var colGeo = new THREE.BoxGeometry( 2, 2, 2)
+			
 			this.testBox = new THREE.Mesh(colGeo, cubeMat)
 
 		});
@@ -87,6 +88,7 @@ class Room2 {
 
 		// Cube stuff
 		this.cubeBound = new THREE.Box3().setFromObject(this.cube)
+		this.cube.position.x = 2
 		scene.add( this.cube )
 
 		this.testBox.position.z-=2
@@ -139,15 +141,15 @@ class Room2 {
 		// Tali's collision code
 		// It seems to work for what it is, if you rotate around a little you can usually get out of the collision
 		// I think the only reason you can do that though is because you are a cube and rotating can physically move you out of the box without actually changing position
+		//re:I think you are wrong for the first part and right for the second, collision also needs to be global so I moved it back to init
+		//also it broke because the player was spawning inside of a collider which was previously untested
+
 		this.cubeBound.setFromObject(this.cube)
-		this.colliding = selfPlayer.playerCollider.intersectsBox(this.testBound) || selfPlayer.playerCollider.intersectsBox(this.cubeBound)
-
-		if (this.colliding) {
-			selfPlayer.setCopyState(this.oldState);
-		}
-
-		// Store player state ready for next update cycle
-		this.oldState = selfPlayer.getCopyState();
+		
+		
+		colliding = selfPlayer.playerCollider.intersectsBox(this.testBound) || selfPlayer.playerCollider.intersectsBox(this.cubeBound)
+	
+		
 
 
 	}
