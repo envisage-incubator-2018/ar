@@ -49,10 +49,8 @@ class PlayerClass {
 		//this.duckLength =0.1;
 
 		//collision handling
-		this.movedForward = false
-		this.movedBack = false
-		this.movedLeft = false
-		this.movedRight = false
+		this.oldState =[];
+		this.veryOldState = [];
 
 		// If player represents client
 		if (this.self) {
@@ -74,10 +72,6 @@ class PlayerClass {
 
 	}
 	update(delta) {
-		this.movedForward = false
-		this.movedBack = false
-		this.movedLeft = false
-		this.movedRight = false
 
 
 		//this.playerGroup.translateZ( delta * -0.001 );
