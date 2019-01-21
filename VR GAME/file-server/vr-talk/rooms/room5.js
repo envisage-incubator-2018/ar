@@ -60,7 +60,10 @@ class Room5 {
 		// Add walls around stadium
 		scene.add( this.cube )
 
-
+		////Collision stuff
+		//Collision array
+		this.thingsThatCollide =[];
+		
 		beginAnimate();
 	}
 	updateRoom() {
@@ -69,7 +72,12 @@ class Room5 {
 		this.cube.position.x -= 0.01
 		this.cube.rotation.x += 0.01
 		this.cube.rotation.y += 0.1
-
+		//testing collision(remember to update collision boxes)
+		colliding=false
+		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
+			colliding = selfPlayer.playerCollider.intersectsBox(this.thingsThatCollide[i])
+			//console.log(i, colliding)
+		}
 	}
 }
 

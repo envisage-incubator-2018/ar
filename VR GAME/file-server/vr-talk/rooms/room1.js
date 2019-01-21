@@ -164,7 +164,9 @@ class Room1 {
 		scene.add( this.pointLight )
 
 
-
+		////Collision stuff
+		//Collision array
+		this.thingsThatCollide =[];
 
 		beginAnimate();
 	}
@@ -220,7 +222,13 @@ class Room1 {
 
 		// Spin fire
 		this.fire.rotation.y +=1
-
+		
+		//testing collision(remember to update collision boxes)
+		colliding=false
+		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
+			colliding = selfPlayer.playerCollider.intersectsBox(this.thingsThatCollide[i])
+			//console.log(i, colliding)
+		}
 	}
 }
 
