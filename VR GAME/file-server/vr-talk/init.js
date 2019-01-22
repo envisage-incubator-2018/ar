@@ -23,7 +23,8 @@ var room;   // The room class that the player is currently in
 //colliding is global
 var colliding = false;
 
-
+//Currently selected object via raycasting. Can make local later.
+var currentSelected = {};
 
 // WebRTC stuff
 var oldPosition;
@@ -394,12 +395,34 @@ function animate(timestamp) {
       //iterate through ray collisions here if you want
   	//}
 
-  console.log(intersects)
-  if (intersects.length>0 && intersects[0].object.userData.Selectable){
-    if (intersects[0].distance <= intersects[0].object.userData.ActivationDistance){
+  if (intersects.length > 0 && intersects[0].object.userData.Selectable){
+    //console.log("things", intersects[0], currentSelected)
+
+     //if we're within range of the selectable object, and the selectable object is the first intersection,
+    if (intersects[0].distance < intersects[0].object.userData.ActivationDistance && currentSelected.face == intersects[0].face){
       console.log(intersects[0].object.userData.SelectTimer)
       intersects[0].object.userData.SelectTimer+= delta/1000
     }
+    else if(!currentSelected.object){
+      //if currentSelected.object returns undefined, meaning we have not selected an intersection with an "object" child,
+      // this means we haven't selected anything, therefore select the first valid intersection
+      // essentially, this triggers if currentSelected is empty.
+      currentSelected = intersects[0];
+      currentSelected.object.userData.SelectTimer = 0;
+      }
+    else{
+      //if currentSelect is not empty, but we are no longer in range of, or looking at the selection,
+      currentSelected.object.userData.SelectTimer = 0;
+      //reset its timer
+      if (intersects.length > 0){
+            //attempt to select a new object
+        currentSelected = intersects[0];
+      }
+    }
+  }
+  else{
+    //otherwise, we're not selecting anything.
+    currentSelected = {};
   }
 
 

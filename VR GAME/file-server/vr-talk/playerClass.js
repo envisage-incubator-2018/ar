@@ -130,6 +130,12 @@ class PlayerClass {
 			if (keyDown["Space"]) {
 				this.playerGroup.translateY( delta * this.movementSpeed );
 			}
+			if (keyDown["KeyR"]) {
+				this.playerGroup.rotateX( delta * this.movementSpeed/2 );
+			}
+			if (keyDown["KeyF"]) {
+				this.playerGroup.rotateX( delta * -this.movementSpeed/2 );
+			}
 			if (keyDown["ShiftLeft"]) {
 				this.playerGroup.translateY( delta * -this.movementSpeed );
 			}
