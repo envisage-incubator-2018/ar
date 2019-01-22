@@ -2,7 +2,7 @@
 
 
 */
-class Room4 {
+class Room_Soccer {
 	constructor() {
 		/*
 			Not sure what would go here :/

@@ -109,7 +109,7 @@ function initVR(roomNum) {
     Room1,
     Room2,
     Room3,
-    Room4,
+    Room_Soccer,
     Room5,
     Room6
   ]
