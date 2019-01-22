@@ -57,16 +57,22 @@ class Room6 {
 		// Add ground
 		scene.add( this.ground )
 
-		// Add walls around stadium
-		scene.add( this.cube )
-
 		////Collision stuff
 		//Collision array
 		this.thingsThatCollide =[];
+		//create colllider
+		this.collider = new THREE.Box3().setFromObject(this.cube)
+		this.thingsThatCollide.push(this.collider)
+
+		this.cube.position.x += 4
+		//add cube
+		scene.add( this.cube )
 		
 		beginAnimate();
 	}
 	updateRoom() {
+		//update collider positions
+		this.collider.setFromObject(this.cube)
 		
 		this.cube.position.y +=0.01
 		this.cube.position.x -= 0.01
@@ -76,7 +82,7 @@ class Room6 {
 		colliding=false
 		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
 			colliding = selfPlayer.playerCollider.intersectsBox(this.thingsThatCollide[i])
-			//console.log(i, colliding)
+			console.log(i, colliding)
 		}
 	}
 }
