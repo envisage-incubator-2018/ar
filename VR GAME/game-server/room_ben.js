@@ -64,10 +64,14 @@ class Room_Ben {
 			},
 			position: {x:-6,y:4,z:-3},
 			rotation: {x:0,y:0,z:0},
+
+			//Selectable Object properties
 			Selectable: 1,
 			SelectTimer: 0,
 			SelectThreshold: 3,
-			ActivationDistance: 5
+			ActivationDistance: 5,
+			ActivationFunction: "teleportPlayer",
+			ActivationParameters: [[0, 0, 0]]
 		}
 	};
 

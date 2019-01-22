@@ -25,6 +25,8 @@ var colliding = false;
 
 //Currently selected object via raycasting. Can make local later.
 var currentSelected = {};
+//Functions for selected Objects
+
 
 // WebRTC stuff
 var oldPosition;
@@ -419,6 +421,12 @@ function animate(timestamp) {
         currentSelected = intersects[0];
       }
     }
+    //If the object has been selected:
+    if (intersects[0].object.userData.SelectTimer >= intersects[0].object.userData.SelectThreshold){
+      //execute object's function with specified parameters
+      objectFunctionsDict[intersects[0].object.userData.ActivationFunction](intersects[0].object.userData.ActivationParameters);
+    }
+
   }
   else{
     //otherwise, we're not selecting anything.
