@@ -37,10 +37,8 @@ class Room_Ben {
 				},
 				position: {x:-3,y:2,z:-3},
 				rotation: {x:0,y:0,z:0},
-				Selectable: 1,
-				SelectTimer: 0,
-				SelectThreshold: 3,
-				ActivationDistance: 5
+
+
 			},
 			"sphere2": {
 				id: "sphere2",
@@ -50,30 +48,27 @@ class Room_Ben {
 				},
 				position: {x:-6,y:4,z:-3},
 				rotation: {x:0,y:0,z:0},
-				Selectable: 1,
-				SelectTimer: 0,
-				SelectThreshold: 3,
-				ActivationDistance: 5
+
+
 			},
 
-		"box1": {
-			id: "box1",
-			modelInfo: {
-				shape: "box",
-				size: [0.5, 0.5, 0.5]
-			},
-			position: {x:-6,y:4,z:-3},
-			rotation: {x:0,y:0,z:0},
+			"box1": {
+				id: "box1",
+				modelInfo: {
+					shape: "box",
+					size: [0.5, 0.5, 0.5]
+				},
+				position: {x:-6,y:4,z:-3},
+				rotation: {x:0,y:0,z:0},
 
-			//Selectable Object properties
-			Selectable: 1,
-			SelectTimer: 0,
-			SelectThreshold: 3,
-			ActivationDistance: 5,
-			ActivationFunction: "teleportPlayer",
-			ActivationParameters: [[0, 0, 0]]
-		}
-	};
+				//Selectable Object properties
+				Selectable: 1,			// Whether object is selectable or not (if this attribute does not exist we assume not)
+				SelectThreshold: 3,		// Selection time until object function runs
+				ActivationDistance: 5,	// Minimum distance to select object
+				ActivationFunction: "teleportPlayer",	
+				ActivationParameter: {x:0,y:1,z:0}
+			}
+		};
 
 
 	}

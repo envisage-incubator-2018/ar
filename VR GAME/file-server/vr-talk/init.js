@@ -387,50 +387,39 @@ function animate(timestamp) {
   lastRenderTime = timestamp;
 
 
-
-  //update the raycasting position
+  // === Handles raycasting stuff === 
+  // update the raycasting position
   raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
-  intersects = raycaster.intersectObjects(scene.children);
+  let intersects = raycaster.intersectObjects(scene.children);
+  if (intersects.length > 0 && intersects[0].object.userData.Selectable) {  
+    //console.log("Looking at a selectable item")
+    intersectingObject = intersects[0];   // Store object
 
-  //console.log(intersects);
-  //for (var i = 0; i < intersects.length; i++) {
-      //iterate through ray collisions here if you want
-  	//}
+    // Only increment timer if object is within selection distance
+    if (intersectingObject.distance <= intersectingObject.object.userData.ActivationDistance) {
+      //console.log("Incrementing timer")
 
-  if (intersects.length > 0 && intersects[0].object.userData.Selectable){
-    //console.log("things", intersects[0], currentSelected)
+      // Increment object timer in seconds
+      intersectingTimer += delta/1000;
 
-     //if we're within range of the selectable object, and the selectable object is the first intersection,
-    if (intersects[0].distance < intersects[0].object.userData.ActivationDistance && currentSelected.face == intersects[0].face){
-      console.log(intersects[0].object.userData.SelectTimer)
-      intersects[0].object.userData.SelectTimer+= delta/1000
-    }
-    else if(!currentSelected.object){
-      //if currentSelected.object returns undefined, meaning we have not selected an intersection with an "object" child,
-      // this means we haven't selected anything, therefore select the first valid intersection
-      // essentially, this triggers if currentSelected is empty.
-      currentSelected = intersects[0];
-      currentSelected.object.userData.SelectTimer = 0;
-      }
-    else{
-      //if currentSelect is not empty, but we are no longer in range of, or looking at the selection,
-      currentSelected.object.userData.SelectTimer = 0;
-      //reset its timer
-      if (intersects.length > 0){
-            //attempt to select a new object
-        currentSelected = intersects[0];
-      }
-    }
-    //If the object has been selected:
-    if (intersects[0].object.userData.SelectTimer >= intersects[0].object.userData.SelectThreshold){
-      //execute object's function with specified parameters
-      objectFunctionsDict[intersects[0].object.userData.ActivationFunction](intersects[0].object.userData.ActivationParameters);
+      // If object has reached selection timer, activate objects function and reset selection
+      if (intersectingTimer >= intersectingObject.object.userData.SelectThreshold) {
+        //console.log("Activating Selection Function!!!");
+        objectFunctions[intersectingObject.object.userData.ActivationFunction](intersectingObject.object.userData.ActivationParameter);
+        intersectingObject = undefined;
+        intersectingTimer = 0;
+      } 
+
+    } else {
+      //console.log("Too far away from object")
+      intersectingObject = undefined;
+      intersectingTimer = 0;
     }
 
-  }
-  else{
-    //otherwise, we're not selecting anything.
-    currentSelected = {};
+  } else {  // If not intersecting with selectable object, reset selection stuff
+    //console.log("Not looking at a selectable item")
+    intersectingObject = undefined;
+    intersectingTimer = 0;
   }
 
 

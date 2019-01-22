@@ -31,7 +31,8 @@ let objects = {};   // Stores an ObjectClass for each object in scene keyed by a
 //Raycasting stuff
 var raycaster = new THREE.Raycaster();
 var rayOriginPos = {x: 0, y: 0};
-var intersects = [];
+var intersectingObject = undefined;   // Stores the object we are currently selecting
+var intersectingTimer = 0;    // Starts from 0 and counts up in seconds until selection timer threshold
 
 
 let gamepad;

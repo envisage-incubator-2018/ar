@@ -168,6 +168,10 @@ class PlayerClass {
 		this.playerGroup.position.set(state.position.x, state.position.y, state.position.z);
 		this.playerGroup.rotation.set(state.rotation.x, state.rotation.y, state.rotation.z);
 	}
+	setPosition(pos) {	// Sets position of player (but uses dictionary notation so Vector3's will work)
+		this.playerGroup.position.set(pos.x, pos.y, pos.z);
+	}
+
 	getCopyState(){
 		var xPos=this.playerGroup.position.x
 		var yPos=this.playerGroup.position.y
