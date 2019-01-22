@@ -394,12 +394,13 @@ function animate(timestamp) {
       //iterate through ray collisions here if you want
   	//}
 
-    if (intersects[0].object.userData.Selectable){
-      if (intersects[0].distance <= intersects[0].object.userData.ActivationDistance){
-        console.log(intersects[0].object.userData.SelectTimer)
-        intersects[0].object.userData.SelectTimer+= delta/1000
-      }
+  console.log(intersects)
+  if (intersects.length>0 && intersects[0].object.userData.Selectable){
+    if (intersects[0].distance <= intersects[0].object.userData.ActivationDistance){
+      console.log(intersects[0].object.userData.SelectTimer)
+      intersects[0].object.userData.SelectTimer+= delta/1000
     }
+  }
 
 
 
