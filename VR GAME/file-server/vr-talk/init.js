@@ -377,7 +377,7 @@ function onResize(e) {
   selfPlayer.camera.updateProjectionMatrix();
 }
 
-
+var currentSelected = [];
 // Request animation frame loop function
 function animate(timestamp) {
   var delta = Math.min(timestamp - lastRenderTime, 500);
@@ -394,12 +394,27 @@ function animate(timestamp) {
       //iterate through ray collisions here if you want
   	//}
 
-    if (intersects[0].object.userData.Selectable){
-      if (intersects[0].distance <= intersects[0].object.userData.ActivationDistance){
-        console.log(intersects[0].object.userData.SelectTimer)
-        intersects[0].object.userData.SelectTimer+= delta/1000
-      }
+  if (intersects.length > 0 && intersects[0].object.userData.Selectable){
+    //console.log("things", intersects[0], currentSelected)
+    if (intersects[0] == currentSelected){
+      console.log("yes")
+      console.log(intersects[0].object.userData.SelectTimer)
+      intersects[0].object.userData.SelectTimer+= delta/1000
     }
+    else if(!currentSelected.object){
+      currentSelected = intersects[0];
+      console.log("elseif ran");
+    }
+    else{
+    //currentSelected.object.userData.SelectTimer = 0;
+    currentSelected = intersects[0];
+    console.log("small else");
+    }
+  }
+  else{
+    currentSelected = [];
+    console.log("big else");
+  }
 
 
 
