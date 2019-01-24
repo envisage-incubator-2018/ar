@@ -60,8 +60,8 @@ setInterval(function() {
 		console.log("	" + roomName + ": " + Object.keys(roomList[roomName].players).length);
 	}
 
-	console.log("roomList:", roomList)
-	console.log("playerList:", playerList)
+	//console.log("roomList:", roomList)
+	//console.log("playerList:", playerList)
 }, 3000);
 
 
@@ -161,6 +161,10 @@ io.sockets.on('connection', function (socket) {
 
 			roomList[roomName]["players"][socket.id]["connected"] = false;
 		}
+
+
+
+
 
 	});
 

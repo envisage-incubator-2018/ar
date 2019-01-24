@@ -35,14 +35,6 @@ var intersectingObject = undefined;   // Stores the object we are currently sele
 var intersectingTimer = 0;    // Starts from 0 and counts up in seconds until selection timer threshold
 
 
-let gamepad;
-let joysticks = {
-    "LeftHorizontal" : 0,
-    "LeftVertical" : 1,
-    "RightHorizontal" : 2,
-    "RightVertical" : 3
-}
-
 function initGame() {
 
   // Create socket connected to node server hosted seperately from file server
@@ -152,6 +144,7 @@ function initGame() {
   });
 
 
+
 }
 
 
@@ -185,6 +178,29 @@ document.addEventListener("keyup", function(evt) {
   keyDown[evt.code] = false;
 });
 
+
+
+
+
+let gamepad;
+let joysticks = {
+    "LeftHorizontal" : 0,
+    "LeftVertical" : 1,
+    "RightHorizontal" : 2,
+    "RightVertical" : 3
+}
+
 window.addEventListener("gamepadconnected", (evt)=>{
     gamepad = evt.gamepad;
+    //document.getElementById("log").innerHTML += "<br>yup"
+    //document.getElementById("log").innerHTML += "<br>" + navigator.getGamepads()[0]
 });
+
+//window.addEventListener("gamepaddisconnected", function(e) {
+  //document.getElementById("log").innerHTML += "<br>gamepad disconnected!!!"
+//});
+
+//let pads = navigator.getGamepads()
+//for (i in pads) {
+//  document.getElementById("log").innerHTML += "<br>gamepads: " + pads[i]
+//}

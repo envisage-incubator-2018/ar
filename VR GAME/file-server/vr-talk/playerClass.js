@@ -78,12 +78,22 @@ class PlayerClass {
 		//this.playerGroup.rotateY ( delta * 0.0001 )
 
 		if (gamepad != undefined) {
+
+			// Updates the gamepad axes by requesting them again
+			navigator.getGamepads()
+
+			//document.getElementById("log").innerHTML = "<br>gamepad: " + gamepad.axes;
+			//document.getElementById("log").innerHTML += "<br>gamepad navigator: " + navigator.getGamepads()[0].axes;
+
+
 			if (Math.abs(gamepad.axes[joysticks['LeftVertical']]) > 0.05) {
-				this.playerGroup.translateZ( delta * 0.001 * gamepad.axes[joysticks['LeftVertical']]);
+				this.playerGroup.translateZ( delta * this.movementSpeed * gamepad.axes[joysticks['LeftVertical']]);
 			}
 			if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']]) > 0.05) {
-				this.playerGroup.translateX( delta * 0.001 * gamepad.axes[joysticks['LeftHorizontal']]);
+				this.playerGroup.translateX( delta * this.movementSpeed * gamepad.axes[joysticks['LeftHorizontal']]);
 			}
+
+
 			if (Math.abs(gamepad.axes[joysticks["RightHorizontal"]]) > 0.05) {
 				// Copied from new version of Three.js
 				var q1 = new THREE.Quaternion();
@@ -93,8 +103,10 @@ class PlayerClass {
 
 			}
 			if (Math.abs(gamepad.axes[joysticks["RightVertical"]]) > 0.05) {
-				this.playerGroup.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);
+				//this.playerGroup.rotateX(gamepad.axes[joysticks['RightVertical']] * -0.05);
 			}
+
+
 
 		} else {  // Move with keyboard controls
 
@@ -154,6 +166,9 @@ class PlayerClass {
 		//console.log(delta)
 
 		//players[socket.id].rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+
+
+		
 
 
 
