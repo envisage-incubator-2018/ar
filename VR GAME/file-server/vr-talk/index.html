@@ -136,6 +136,7 @@ WebVRConfig = {
 
 
 <!-- Load scripts before running initialisation -->
+<!--
 <script src="init.js"></script>
 
 <script src="game.js"></script>
@@ -151,6 +152,33 @@ WebVRConfig = {
 <script src="rooms/room_soccer.js"></script>
 <script src="rooms/room5.js"></script>
 <script src="rooms/room6.js"></script>
+-->
+
+<!-- A temporary fix for cache refreshes -->
+<script>
+  let fileList = [
+    "init.js", 
+
+    "game.js", 
+    "playerClass.js", 
+    "objectFunctions.js", 
+    "objectClass.js",
+
+    "rooms/room_music.js",
+    "rooms/room1.js",
+    "rooms/room2.js",
+    "rooms/room3.js",
+    "rooms/room_soccer.js",
+    "rooms/room5.js",
+    "rooms/room6.js"
+  ];
+
+  for (let i in fileList) {
+    let script = document.createElement("script");
+    script.src = fileList[i] + "?t=" + new Date().getTime();
+    document.body.appendChild(script);
+  }
+</script>
 
 <!--script>window.addEventListener('load', initVR);</script-->
 
