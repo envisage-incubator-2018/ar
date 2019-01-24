@@ -30,7 +30,7 @@
       z-index: 1;
     }
 
-    a#magic-window {
+    #magic-window {
       display: block;
       color: white;
       margin-top: 1em;
@@ -49,7 +49,9 @@
 </head>
 
 <body>
+  <canvas id="canvas" style="display: none"></canvas>
   <div id='roomCreate'style="margin-top:100px;">
+
     <button type="button" onClick="initVR(0)">Music?</button>
     <button type="button" onClick="initVR(1)">Room 1</button>
     <button type="button" onClick="initVR(2)">Room 2</button>
@@ -63,6 +65,8 @@
     <a id="magic-window" href="#">Try it without a headset</a>
     <p id="ping">Not Connected</p>
   </div>
+
+
 </body>
 
 

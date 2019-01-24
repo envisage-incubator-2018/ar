@@ -34,15 +34,19 @@ class Room5 {
 
 		// Create cube mesh
 		this.textureLoader.load('tex/box.jpg', (cubeTex)=>{
-			var cubeMat = new THREE.MeshStandardMaterial({map: cubeTex})
+			var cubeMat = new THREE.MeshStandardMaterial({map: selectionCanvasTexture, transparent: true})
 			var geometry = new THREE.BoxGeometry( 1, 1, 1 )
 			this.cube = new THREE.Mesh( geometry, cubeMat )
+			this.cube.position.y += 3
+			this.cube.position.z += 3
+
+
 		})
 
 
 	}
 	loadRoom() {
-	
+
 		console.log("Loading room")
 
 		// Adds a light to the scene
@@ -63,15 +67,15 @@ class Room5 {
 		////Collision stuff
 		//Collision array
 		this.thingsThatCollide =[];
-		
+		selfPlayer.camera.add(this.cube);
+
 		beginAnimate();
 	}
 	updateRoom() {
-		
-		this.cube.position.y +=0.01
-		this.cube.position.x -= 0.01
-		this.cube.rotation.x += 0.01
-		this.cube.rotation.y += 0.1
+		console.log(this.cube.position)
+		//this.cube.position.x, this.cube.position.y, this.cube.position.z = selfPlayer.getState().position.x
+		this.cube.material.map.needsUpdate = true;
+
 		//testing collision(remember to update collision boxes)
 		colliding=false
 		for(let i=0; (i<this.thingsThatCollide.length)&&(colliding==false); i++){
@@ -80,5 +84,3 @@ class Room5 {
 		}
 	}
 }
-
-
