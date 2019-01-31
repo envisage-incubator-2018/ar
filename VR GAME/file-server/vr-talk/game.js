@@ -28,13 +28,6 @@ let socket;
 let players = {};   // Stores a PlayerClass for each player keyed by the players id
 let objects = {};   // Stores an ObjectClass for each object in scene keyed by a custom object id
 
-//Raycasting stuff
-var raycaster = new THREE.Raycaster();
-var rayOriginPos = {x: 0, y: 0};
-var intersectingObject = undefined;   // Stores the object we are currently selecting
-var intersectingTimer = 0;    // Starts from 0 and counts up in seconds until selection timer threshold
-
-
 function initGame() {
 
   // Create socket connected to node server hosted seperately from file server

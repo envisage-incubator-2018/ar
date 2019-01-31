@@ -17,28 +17,13 @@ var vrButton;
 // The player which represents the client themselves
 var selfPlayer;
 
-var chosenRoom;   // The room number that the player selected
+
+var chosenRoom = -1;  // Store a global version of chosen room so socket code knows which room to join
 var room;   // The room class that the player is currently in
 
 //colliding is global
 var colliding = false;
 
-//Currently selected object via raycasting. Can make local later.
-var currentSelected = {};
-
-var selectionProgress = 0;  //progress 'x' in selecting an object where 0<x<1
-
-//Selection canvas
-var selectionCanvas = document.getElementById('canvas');
-var selectionCtx = selectionCanvas.getContext('2d');
-selectionCanvas.width = 256;
-selectionCanvas.height = 256;
-selectionCtx.strokeStyle = "#FF0000";
-
-
-var selectionCanvasTexture = new THREE.CanvasTexture(selectionCanvas)
-
-//
 
 // WebRTC stuff
 var oldPosition;
@@ -49,8 +34,7 @@ var peers = {};
 // Dictionary of PositionalAudio objects in three js [indexed by player id]
 var peer_audio_objects = {};
 
-// Store a global version of chosen room so socket know which room to join
-var chosenRoom = -1;
+
 
 
 function initVR(roomNum) {
@@ -398,59 +382,6 @@ function animate(timestamp) {
   var delta = Math.min(timestamp - lastRenderTime, 500);
   lastRenderTime = timestamp;
 
-
-  // === Handles raycasting stuff === //
-  // update the raycasting position
-  raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
-  let intersects = raycaster.intersectObjects(scene.children);
-  if (intersects.length > 0 && intersects[0].object.userData.Selectable) {
-    //console.log("Looking at a selectable item")
-    intersectingObject = intersects[0];   // Store object
-
-    // Only increment timer if object is within selection distance
-    if (intersectingObject.distance <= intersectingObject.object.userData.ActivationDistance) {
-      //console.log("Incrementing timer")
-      // selectionProgress becomes the timer as a percentage of the threshold required to select the object.
-      selectionProgress = intersectingTimer/intersectingObject.object.userData.SelectThreshold
-      // Increment object timer in seconds
-      intersectingTimer += delta/1000;
-      selectionCtx.beginPath();
-      selectionCtx.arc(95,50,40,-0.5*Math.PI,selectionProgress*2*Math.PI-0.5*Math.PI);
-      selectionCtx.stroke();
-
-
-
-
-
-
-
-      // If object has reached selection timer, activate objects function and reset selection
-      if (intersectingTimer >= intersectingObject.object.userData.SelectThreshold) {
-        //console.log("Activating Selection Function!!!");
-        objectFunctions[intersectingObject.object.userData.ActivationFunction](intersectingObject.object.userData.ActivationParameter);
-        intersectingObject = undefined;
-        intersectingTimer = 0;
-        selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
-
-      }
-
-    } else {
-      //console.log("Too far away from object")
-      intersectingObject = undefined;
-      intersectingTimer = 0;
-      selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
-    }
-
-  } else {  // If not intersecting with selectable object, reset selection stuff
-    //console.log("Not looking at a selectable item")
-    intersectingObject = undefined;
-    intersectingTimer = 0;
-    selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
-  }
-
-
-
-
 	if (colliding) {
 		selfPlayer.setCopyState(selfPlayer.veryOldState);
 	}
@@ -461,17 +392,16 @@ function animate(timestamp) {
 
   //updateGame(delta);
 
+  // Update player-specific code (movement, selection)
   selfPlayer.update(delta);
-
 
   // Performs local updates on room (objects only visible to local user like snow for example)
   // The equivilant of the old animate1()...
   room.updateRoom();
 
-
   // Render the scene from selfPlayers camera view
   effect.render(scene, selfPlayer.camera);
 
-
+  // Loop back to animate next frame when possible
   vrDisplay.requestAnimationFrame(animate);
 }
