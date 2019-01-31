@@ -43,6 +43,12 @@ class Room5 {
 
 		})
 
+		this.textureLoader.load('tex/ground.jpg', (planeTex)=>{
+			var planeMat = new THREE.MeshStandardMaterial({map: selectionCanvasTexture, transparent:true})
+			var planeGeometry = new THREE.PlaneGeometry( 1, 1, 1 )
+			this.plane = new THREE.Mesh( planeGeometry, planeMat )
+		})
+
 
 	}
 	loadRoom() {
@@ -64,15 +70,20 @@ class Room5 {
 		// Add walls around stadium
 		scene.add( this.cube )
 
+		scene.add( this.plane )
+		this.plane.position.z = -1
+		selfPlayer.camera.add(this.plane);
+
 		////Collision stuff
 		//Collision array
 		this.thingsThatCollide =[];
-		selfPlayer.camera.add(this.cube);
+	//	this.cube.add(this.plane);
 
 		beginAnimate();
 	}
 	updateRoom() {
-		console.log(this.cube.position)
+
+
 		//this.cube.position.x, this.cube.position.y, this.cube.position.z = selfPlayer.getState().position.x
 		this.cube.material.map.needsUpdate = true;
 

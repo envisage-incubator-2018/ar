@@ -34,9 +34,7 @@ var selectionCtx = selectionCanvas.getContext('2d');
 selectionCanvas.width = 256;
 selectionCanvas.height = 256;
 selectionCtx.strokeStyle = "#FF0000";
-selectionCtx.beginPath();
-selectionCtx.arc(95,50,40,0,2*Math.PI);
-selectionCtx.stroke();
+
 
 var selectionCanvasTexture = new THREE.CanvasTexture(selectionCanvas)
 
@@ -417,7 +415,7 @@ function animate(timestamp) {
       // Increment object timer in seconds
       intersectingTimer += delta/1000;
       selectionCtx.beginPath();
-      selectionCtx.arc(95,50,40,0,2*Math.PI);
+      selectionCtx.arc(95,50,40,-0.5*Math.PI,selectionProgress*2*Math.PI-0.5*Math.PI);
       selectionCtx.stroke();
 
 
@@ -432,7 +430,7 @@ function animate(timestamp) {
         objectFunctions[intersectingObject.object.userData.ActivationFunction](intersectingObject.object.userData.ActivationParameter);
         intersectingObject = undefined;
         intersectingTimer = 0;
-        /////////selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
+        selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
 
       }
 
@@ -440,14 +438,14 @@ function animate(timestamp) {
       //console.log("Too far away from object")
       intersectingObject = undefined;
       intersectingTimer = 0;
-      //////////selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
+      selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
     }
 
   } else {  // If not intersecting with selectable object, reset selection stuff
     //console.log("Not looking at a selectable item")
     intersectingObject = undefined;
     intersectingTimer = 0;
-    //////////selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
+    selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
   }
 
 
