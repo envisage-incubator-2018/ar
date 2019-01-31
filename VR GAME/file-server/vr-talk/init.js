@@ -25,8 +25,20 @@ var colliding = false;
 
 //Currently selected object via raycasting. Can make local later.
 var currentSelected = {};
-//Functions for selected Objects
 
+var selectionProgress = 0;  //progress 'x' in selecting an object where 0<x<1
+
+//Selection canvas
+var selectionCanvas = document.getElementById('canvas');
+var selectionCtx = selectionCanvas.getContext('2d');
+selectionCanvas.width = 256;
+selectionCanvas.height = 256;
+selectionCtx.strokeStyle = "#FF0000";
+
+
+var selectionCanvasTexture = new THREE.CanvasTexture(selectionCanvas)
+
+//
 
 // WebRTC stuff
 var oldPosition;
@@ -387,20 +399,30 @@ function animate(timestamp) {
   lastRenderTime = timestamp;
 
 
-  // === Handles raycasting stuff === 
+  // === Handles raycasting stuff === //
   // update the raycasting position
   raycaster.setFromCamera(rayOriginPos, selfPlayer.camera);
   let intersects = raycaster.intersectObjects(scene.children);
-  if (intersects.length > 0 && intersects[0].object.userData.Selectable) {  
+  if (intersects.length > 0 && intersects[0].object.userData.Selectable) {
     //console.log("Looking at a selectable item")
     intersectingObject = intersects[0];   // Store object
 
     // Only increment timer if object is within selection distance
     if (intersectingObject.distance <= intersectingObject.object.userData.ActivationDistance) {
       //console.log("Incrementing timer")
-
+      // selectionProgress becomes the timer as a percentage of the threshold required to select the object.
+      selectionProgress = intersectingTimer/intersectingObject.object.userData.SelectThreshold
       // Increment object timer in seconds
       intersectingTimer += delta/1000;
+      selectionCtx.beginPath();
+      selectionCtx.arc(95,50,40,-0.5*Math.PI,selectionProgress*2*Math.PI-0.5*Math.PI);
+      selectionCtx.stroke();
+
+
+
+
+
+
 
       // If object has reached selection timer, activate objects function and reset selection
       if (intersectingTimer >= intersectingObject.object.userData.SelectThreshold) {
@@ -408,18 +430,22 @@ function animate(timestamp) {
         objectFunctions[intersectingObject.object.userData.ActivationFunction](intersectingObject.object.userData.ActivationParameter);
         intersectingObject = undefined;
         intersectingTimer = 0;
-      } 
+        selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
+
+      }
 
     } else {
       //console.log("Too far away from object")
       intersectingObject = undefined;
       intersectingTimer = 0;
+      selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
     }
 
   } else {  // If not intersecting with selectable object, reset selection stuff
     //console.log("Not looking at a selectable item")
     intersectingObject = undefined;
     intersectingTimer = 0;
+    selectionCtx.clearRect(0, 0, canvas.width, canvas.height) //clear the canvas
   }
 
 
