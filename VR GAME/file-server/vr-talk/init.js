@@ -393,8 +393,6 @@ function animate(timestamp) {
 	selfPlayer.veryOldState =selfPlayer.oldState
 	selfPlayer.oldState = selfPlayer.getCopyState();
 
-  //updateGame(delta);
-
   // Update player-specific code (movement, selection)
   selfPlayer.update(delta);
 
