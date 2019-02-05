@@ -29,34 +29,10 @@ class Room_Ben {
 		this.players = {};
 
 		this.objects = {
-			"sphere1": {
-				id: "sphere1",
-				modelInfo: {
-					shape: "sphere",
-					size: 0.5
-				},
-				position: {x:-3,y:2,z:-3},
-				rotation: {x:0,y:0,z:0},
-
-
-			},
-			"sphere2": {
-				id: "sphere2",
-				modelInfo: {
-					shape: "sphere",
-					size: 0.5
-				},
-				position: {x:-6,y:4,z:-3},
-				rotation: {x:0,y:0,z:0},
-
-
-			},
-
 			"box1": {
-				id: "box1",
 				modelInfo: {
 					shape: "box",
-					size: [0.5, 0.5, 0.5]
+					size: {x:1, y:1, z:1}
 				},
 				position: {x:-6,y:4,z:-3},
 				rotation: {x:0,y:0,z:0},
@@ -69,6 +45,28 @@ class Room_Ben {
 				ActivationParameter: {x:0,y:1,z:0}
 			}
 		};
+
+
+		for (let x=0; x<8; x++) {
+			for (let y=0; y<8; y++) {
+				this.objects["piece" + x*8 + y] = {
+					modelInfo: {
+						shape: "cylinder",
+						size: {r:0.4, h:0.2}
+					},
+					position: {x:x-3.5, y:0.6, z:y-3.5},
+					rotation: {x:0,y:0,z:0},
+
+
+					//Selectable Object properties
+					Selectable: true,			// Whether object is selectable or not (if this attribute does not exist we assume not)
+					SelectThreshold: 3,		// Selection time until object function runs
+					ActivationDistance: 5,	// Minimum distance to select object
+					ActivationFunction: "teleportPlayer",	
+					ActivationParameter: {x:0,y:1,z:0}
+				}
+			}
+		}
 
 
 	}
@@ -95,7 +93,6 @@ class Room_Ben {
 	}
 	update() {		// Runs each server tick to update server-side objects
 
-		this.objects["sphere1"].position.x += -0.001;
 
 	}
 }

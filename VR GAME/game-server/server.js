@@ -29,7 +29,7 @@
 let Room_Empty = require("./room_empty.js");
 let Room_Blank = require("./room_blank.js");
 let Room_Soccer = require("./room_soccer.js");
-let Room_Ben = require("./room_ben.js");
+let Room_Checkers = require("./room_checkers.js");
 let Room_Pong = require("./room_pong.js");
 
 
@@ -42,7 +42,7 @@ let roomList = {
 	"room2": new Room_Blank(),
 	"room3": new Room_Pong(),
 	"room4": new Room_Soccer(),
-	"room5": new Room_Ben(),
+	"room5": new Room_Checkers(),
 	"room6": new Room_Blank()
 };
 

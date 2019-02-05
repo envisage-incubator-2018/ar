@@ -106,7 +106,7 @@ function initVR(roomNum) {
     Room2,
     Room3,
     Room_Soccer,
-    Room5,
+    Room_Checkers,
     Room6
   ]
   room = new roomList[chosenRoom]();

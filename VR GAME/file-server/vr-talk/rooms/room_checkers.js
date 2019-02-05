@@ -2,7 +2,7 @@
 
 
 */
-class Room5 {
+class Room_Checkers {
 	constructor() {
 		/*
 			Not sure what would go here :/
@@ -33,6 +33,13 @@ class Room5 {
 
 
 
+		// Creates checkers board mesh
+		this.textureLoader.load('tex/snow/sky.jpg', (skyTex)=>{
+			let mat = new THREE.MeshToonMaterial({map: skyTex});
+			let geo = new THREE.BoxGeometry( 8, 1, 8 )
+			this.checkersBoard = new THREE.Mesh( geo, mat )
+		})
+
 
 	}
 	loadRoom() {
@@ -55,6 +62,16 @@ class Room5 {
 		//Collision array
 		this.thingsThatCollide =[];
 	//	this.cube.add(this.plane);
+
+
+
+		// Add checkers board
+		this.checkersBoard.y = 1
+		scene.add( this.checkersBoard )
+
+
+
+
 
 		beginAnimate();
 	}

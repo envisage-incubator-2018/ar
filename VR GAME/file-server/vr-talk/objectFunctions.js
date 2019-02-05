@@ -22,6 +22,8 @@ function createObject(objectData) {
     geometry = new THREE.SphereGeometry(objectData.modelInfo.size, 16, 16);
   } else if (objectData.modelInfo.shape == "box") {   // Boxes require 3 dimentions of size
     geometry = new THREE.BoxGeometry(objectData.modelInfo.size.x, objectData.modelInfo.size.y, objectData.modelInfo.size.z)
+  } else if (objectData.modelInfo.shape == "cylinder") {   // Boxes require 3 dimentions of size
+    geometry = new THREE.CylinderGeometry(objectData.modelInfo.size.r, objectData.modelInfo.size.r, objectData.modelInfo.size.h, 16, 16)
   }
 
   // Object material is currently always this
