@@ -226,12 +226,20 @@ class PlayerClass {
 		var xPos=this.playerGroup.position.x
 		var yPos=this.playerGroup.position.y
 		var zPos=this.playerGroup.position.z
-		var posArray=[xPos, yPos, zPos]
+		var xRot=this.playerGroup.rotation.x
+		var yRot=this.playerGroup.rotation.y
+		var zRot=this.playerGroup.rotation.z
+		var xCam=this.camera.rotation.x
+		var yCam=this.camera.rotation.y
+		var zCam=this.camera.rotation.z
+
+		var posArray=[xPos, yPos, zPos, xRot, yRot, zRot, xCam, yCam, zCam]
 		return(posArray)
 
 	}
 	setCopyState(oldState){
 		this.playerGroup.position.set(oldState[0], oldState[1], oldState[2])
+		this.playerGroup.rotation.set(oldState[3]-oldState[6], oldState[4]-oldState[7], oldState[5]-oldState[8])
 
 	}
 	getState() {
@@ -275,7 +283,7 @@ class PlayerClass {
 		}
 		if (Math.abs(gamepad.axes[joysticks['LeftHorizontal']]) > 0.05) {
 
-			
+
 			let moveVector = new THREE.Vector3();
 			this.camera.getWorldDirection(moveVector);
 
@@ -284,13 +292,13 @@ class PlayerClass {
 
 			moveVector = moveVector.multiplyScalar(delta * this.movementSpeed * gamepad.axes[joysticks['LeftHorizontal']]);
 			this.playerGroup.position.add(moveVector);
-			
+
 
 			//this.playerGroup.translateX( delta * this.movementSpeed * gamepad.axes[joysticks['LeftHorizontal']]);
 		}
 
 
-		// Rotate camera 
+		// Rotate camera
 		if (Math.abs(gamepad.axes[joysticks["RightHorizontal"]]) > 0.05) {
 			// Copied from new version of Three.js
 			var q1 = new THREE.Quaternion();
@@ -307,7 +315,7 @@ class PlayerClass {
 	updateObjectSelection(delta) {
 
 		// Clear the canvas at the beginning of each frame
-		this.selectionCtx.clearRect(0, 0, this.selectionCanvas.width, this.selectionCanvas.height)   
+		this.selectionCtx.clearRect(0, 0, this.selectionCanvas.width, this.selectionCanvas.height)
 
 		// Draw circle in centre of screen
 		this.selectionCtx.beginPath();
@@ -365,7 +373,7 @@ class PlayerClass {
 		}
 
 
-		// Forces canvas gui plane to update material 
+		// Forces canvas gui plane to update material
 		this.planeMat.map.needsUpdate = true;
 
 	}
