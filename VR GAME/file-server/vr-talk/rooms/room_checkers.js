@@ -11,9 +11,6 @@ class Room_Checkers {
 	createMeshes() {
 		console.log("Creating Meshes")
 
-		// Creates a light
-		this.directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
-
 		// Create skybox
 		this.textureLoader.load("tex/sky.jpg", (skyTex)=>{
 			var skyMat = new THREE.MeshBasicMaterial({
@@ -42,7 +39,7 @@ class Room_Checkers {
 
 
 		// Create both player colours		
-		let matWhite = new THREE.MeshLambertMaterial({color: "#dddddd"});
+		let matWhite = new THREE.MeshLambertMaterial({color: "#ffffff"});
 		let matBlack = new THREE.MeshLambertMaterial({color: "#333333"});
 
 		// Creates the two types of pieces (black/white)
@@ -61,10 +58,15 @@ class Room_Checkers {
 
 		console.log("Loading room")
 
-		// Adds a light to the scene
-		let lightPos = new THREE.Vector3(2,10,5)
-		this.directionalLight.position.copy( lightPos)
+		// Creates and adds a light to the scene
+		this.directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5);
+		this.directionalLight.position.set(2,4,3);
 		scene.add( this.directionalLight );
+
+		this.directionalLight2 = new THREE.DirectionalLight( 0xffffff, 0.5);
+		this.directionalLight2.position.set(-2,4,-3);
+		scene.add( this.directionalLight2 );
+
 
 		// Adds starbox to scene
 		this.skyBox.position.y=5
