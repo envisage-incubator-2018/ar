@@ -23,13 +23,15 @@
 
 */
 
-
-
+// Listen on port 3000
+console.log("Starting server");
+io = require('socket.io').listen(3000);
+io.set("heartbeat interval", 1000);
 
 let Room_Empty = require("./room_empty.js");
 let Room_Blank = require("./room_blank.js");
 let Room_Soccer = require("./room_soccer.js");
-let Room_Ben = require("./room_ben.js");
+let Room_Checkers = require("./room_checkers.js");
 let Room_Pong = require("./room_pong.js");
 
 
@@ -37,17 +39,17 @@ let Room_Pong = require("./room_pong.js");
 // Players contain position/rotation information
 // Objects are objects in the room with position/rotation that is global to all players in that room
 let roomList = {
-	"room0": new Room_Empty(),
-	"room1": new Room_Blank(),
-	"room2": new Room_Blank(),
-	"room3": new Room_Pong(),
-	"room4": new Room_Soccer(),
-	"room5": new Room_Ben(),
-	"room6": new Room_Blank()
+	"room0": new Room_Empty("room0"),
+	"room1": new Room_Blank("room1"),
+	"room2": new Room_Blank("room2"),
+	"room3": new Room_Pong("room3"),
+	"room4": new Room_Soccer("room4"),
+	"room5": new Room_Checkers("room5"),
+	"room6": new Room_Blank("room6")
 };
 
-// List of players with key as socket.id and values as room name string
-// e.g. {"id123": "room1"}
+// List of players with key as socket.id and values as room name string and rtc connection state
+// e.g. {"id123": ["room1", true]}
 let playerList = {};
 
 // Log server information
@@ -61,15 +63,11 @@ setInterval(function() {
 	}
 
 	//console.log("roomList:", roomList)
-	//console.log("playerList:", playerList)
+	console.log("playerList:", playerList)
 }, 3000);
 
 
-// Listen on port 3000
-let io = require('socket.io').listen(3000);
-io.set("heartbeat interval", 1000);
 
-console.log("Starting server");
 
 
 io.sockets.on('connection', function (socket) {
@@ -83,28 +81,28 @@ io.sockets.on('connection', function (socket) {
 		roomList[roomName].addPlayer(socket.id);	// Add player to room class
 
 		// Add to playerList with roomName
-		playerList[socket.id] = roomName;
+		playerList[socket.id] = [roomName, false];
 
 		// Send world state to new player to allow them to start updating their own position
-		socket.emit('init-world-state', roomList[roomName].getRoomState());
+		roomList[roomName].initDataToPlayer(socket);
 
 		// Tells all users in room that a user connected
 		socket.to(roomName).emit("user-connected", socket.id);
 
-		// Wait for client to send their own state
+		// Wait for client to send their own state every client-tick
 		socket.on('update-state', function (playerData) {
 
 			// Set players updated position in room
-			let roomName = playerList[socket.id];
+			let roomName = playerList[socket.id][0];
 			roomList[roomName].setPlayerState(socket.id, playerData);
 		});
 
 		// RTC event handlers
 		socket.emit("rtc_connect");
 
-		socket.on("rtc_join", function(roomName) {
+		socket.on("rtc_join", function(roomName, canMakeOffer) {
 			roomName = "room" + roomName;
-			if (roomList[roomName]["players"][socket.id]["connected"]) {
+			if (playerList[socket.id][1]) {
 				// Disconnect from the old channel
 				console.log("disconnecting rtc in join event");
 				rtc_disconnect();
@@ -112,16 +110,20 @@ io.sockets.on('connection', function (socket) {
 
 			console.log("Connecting a new RTC user");
 
-			// Tell all of the other clients to open a connection to this client
-			io.to(roomName).emit("add_rtc_peer", {"id" : socket.id, "make_offer" : false});
+			console.log(roomList[roomName]["players"]);
+
 			// Tell this client to open WebRTC connections
 			for (id in roomList[roomName]["players"]) {
-				if (id != socket.id) {
-					socket.emit("add_rtc_peer", {"id" : id, "make_offer" : true});
+				if (playerList[id][1]) {
+					// Tell all of the other clients to open a connection to this client
+					io.to(`${id}`).emit("add_rtc_peer", {"id" : socket.id, "make_offer" : !canMakeOffer});
+					if (id != socket.id) {
+						socket.emit("add_rtc_peer", {"id" : id, "make_offer" : canMakeOffer});	
+					}				
 				}
 			}
 
-			roomList[roomName]["players"][socket.id]["connected"] = true;
+			playerList[socket.id][1] = true;
 
 		});
 
@@ -137,7 +139,7 @@ io.sockets.on('connection', function (socket) {
 
 		// If client disconnects, remove them from room and tell other users
 		socket.on('disconnect', function () {
-			let roomName = playerList[socket.id];
+			let roomName = playerList[socket.id][0];
 			console.log("Player " + socket.id + " disconnected from room " + roomName);
 
 			// Disconnect the RTC connection
@@ -159,7 +161,7 @@ io.sockets.on('connection', function (socket) {
 			// Tell this client to close all WebRTC connections
 			socket.emit("rtc_disconnect");
 
-			roomList[roomName]["players"][socket.id]["connected"] = false;
+			playerList[socket.id][1] = false;
 		}
 
 
@@ -179,6 +181,6 @@ setInterval(function() {
 		roomList[roomName].update();
 
 		// Send new room state to all players
-		io.to(roomName).emit('update-world-state', roomList[roomName].getRoomState());
+		roomList[roomName].sendDataToPlayers();
 	}
 }, 1000/60);

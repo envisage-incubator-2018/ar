@@ -27,14 +27,14 @@ class Room3 {
 				})
 			});
 			
-		//dummy box
-		var testBoxGeo = new THREE.BoxGeometry(4,4,10)
-		this.testBox =new THREE.Mesh(testBoxGeo, skyMat)
-		
-		
-		// Creates ground mesh
-		var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
-		this.ground = new THREE.Mesh( groundGeometry, skyMat )
+			//dummy box
+			var testBoxGeo = new THREE.BoxGeometry(4,4,10)
+			this.testBox =new THREE.Mesh(testBoxGeo, skyMat)
+			
+			
+			// Creates ground mesh
+			var groundGeometry = new THREE.BoxGeometry( 40, 0.1, 40 )
+			this.ground = new THREE.Mesh( groundGeometry, skyMat )
 
 		})
 
@@ -71,7 +71,6 @@ class Room3 {
 		this.thingsThatCollide =[];
 		this.thingsThatCollide.push(this.testBound)
 
-		beginAnimate();
 	}
 	updateRoom() {
 		

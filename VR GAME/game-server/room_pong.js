@@ -7,8 +7,16 @@
 */
 
 class Room_Pong {
-	constructor() {
+	constructor(roomName) {
 		
+		this.roomName = roomName;	// Used so that server knows which socket room to send its room data to
+
+		// This is sent to each client in the room every server tick
+		// room.players and room.objects are automatically added by default
+		// Any other data must be set elsewhere in the code and will only be sent once before being removed from the roomData object
+		this.roomData = {};
+
+
 		this.players = {};
 
 		this.objects = {
@@ -44,15 +52,22 @@ class Room_Pong {
 
 
 	}
-	getRoomState() {	// Gets the room state to be sent to each client every tick
-		// Certain attributes like object velocity may not need to be transmitted as position is all the client needs
-		// However to prevent lag perhaps the player can also be sent that information and then extrapolate the objects
-		// 	future position and correct any errors that may be calculated
-		return {
-			players: this.players,
-			objects: this.objects
-		}
+
+	initDataToPlayer(socket) {	// Sends the inital room state to a new player in the room
+		socket.emit('init-world-state', {
+			"players": this.players,
+			"objects": this.objects
+		});
 	}
+	sendDataToPlayers() {	// Sends the room state to all players in the room
+
+		// Adds the room players and objects data to be sent to each player
+		this.roomData.players = this.players;
+		this.roomData.objects = this.objects;
+
+		io.to(this.roomName).emit('update-world-state', this.roomData);
+	}
+	
 	setPlayerState(id, playerData) {	// Updates rooms version of player position as recieved from the player
 		this.players[id] = playerData;
 	}

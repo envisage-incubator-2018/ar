@@ -70,6 +70,8 @@ class PlayerClass {
 			this.playerGroup.add(this.camera);
 
 
+			// The data sent by the player to the server room each client-tick
+			this.playerData = {};
 
 
 
@@ -243,15 +245,16 @@ class PlayerClass {
 
 	}
 	getState() {
-		//return {"position": this.playerGroup.position, "rotation": {x:0,y:0,z:0}};
-		return {
-			"position": this.playerGroup.position,
-			"rotation": {
-				x:this.playerGroup.rotation.x + this.camera.rotation.x,
-				y:this.playerGroup.rotation.y + this.camera.rotation.y,
-				z:this.playerGroup.rotation.z + this.camera.rotation.z
-			}
+		// playerData always sends position/rotation to the server
+		// All other data sent to the room must be set elsewhere in the code with selfPlayer.playerData.x = y
+		this.playerData.position = this.playerGroup.position;
+		this.playerData.rotation = {
+			x: this.playerGroup.rotation.x + this.camera.rotation.x,
+			y: this.playerGroup.rotation.y + this.camera.rotation.y,
+			z: this.playerGroup.rotation.z + this.camera.rotation.z
 		}
+
+		return this.playerData;
 	}
 	addToScene() {
 

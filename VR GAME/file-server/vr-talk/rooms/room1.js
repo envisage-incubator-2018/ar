@@ -149,9 +149,22 @@ class Room1 {
 		scene.add (this.fire)
 
 
+		this.cube.userData = {
+			self: this.cube,
+
+			//Selectable Object properties
+			Selectable: 1,			// Whether object is selectable or not (if this attribute does not exist we assume not)
+			SelectThreshold: 3,		// Selection time until object function runs
+			ActivationDistance: 5,	// Minimum distance to select object
+			ActivationFunction: "teleportPlayer",	
+			ActivationParameter: {x:0,y:1,z:10},
+		}
+		scene.add( this.cube )
+
+
+
 		// Add other stuff to scene
 		scene.add( this.ground )
-		scene.add( this.cube )
 		scene.add( this.skyBox )
 
 
@@ -168,7 +181,6 @@ class Room1 {
 		//Collision array
 		this.thingsThatCollide =[];
 
-		beginAnimate();
 	}
 	updateRoom() {
 		/*
@@ -194,12 +206,6 @@ class Room1 {
 		*/
 		//console.log("Updating room")
 
-
-		// Spin and move cube
-		this.cube.position.y +=0.01
-		this.cube.position.x -= 0.01
-		this.cube.rotation.x += 0.01
-		this.cube.rotation.y += 0.1
 
 
 		// Update snow to make it fall

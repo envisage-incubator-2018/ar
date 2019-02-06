@@ -54,8 +54,8 @@
     <button type="button" onClick="initVR(1)">Room 1</button>
     <button type="button" onClick="initVR(2)">Room 2</button>
     <button type="button" onClick="initVR(3)">Room 3</button>
-    <button type="button" onClick="initVR(4)">Matty Testing</button>
-    <button type="button" onClick="initVR(5)">Ben Checkers</button>
+    <button type="button" onClick="initVR(4)">Soccer</button>
+    <button type="button" onClick="initVR(5)">Checkers</button>
     <button type="button" onClick="initVR(6)">Mitchell WebRTC</button>
   </div>
   <div id="ui">
@@ -115,10 +115,6 @@ WebVRConfig = {
 <script src ="js/GLTFLoader.js"></script>
 <script src="js/MTLLoader.js"></script>
 
-<!-- Handles collision detection-->
-<script src='js/Box3.js'></script>
-
-
 
 <!-- VREffect.js handles stereo camera setup and rendering. -->
 <script src="node_modules/three.js/node_modules/three/examples/js/effects/VREffect.js"></script>
@@ -164,14 +160,13 @@ WebVRConfig = {
     "game.js", 
     "playerClass.js", 
     "objectFunctions.js", 
-    "objectClass.js",
 
     "rooms/room_music.js",
     "rooms/room1.js",
     "rooms/room2.js",
     "rooms/room3.js",
     "rooms/room_soccer.js",
-    "rooms/room5.js",
+    "rooms/room_checkers.js",
     "rooms/room6.js"
   ];
 

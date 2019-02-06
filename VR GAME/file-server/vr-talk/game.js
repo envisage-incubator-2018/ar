@@ -85,15 +85,20 @@ function initGame() {
 
     // Add each object to room
     for (let id in data.objects) {
-      objects[id] = new ObjectClass(data.objects[id]);
+      objects[id] = createObject(data.objects[id]);
+    }
+
+    if (room.initRoomData) {
+       room.initRoomData(data);
     }
 
 
     // Now that user has world state, user begins updating
     // its own game state and sending it to server at a set tick rate
     setInterval(function() {
-      let userState = selfPlayer.getState();
-      socket.emit("update-state", userState);
+      let playerState = selfPlayer.getState();
+      socket.emit("update-state", playerState);
+      selfPlayer.playerData = {};   // Reset playerData after sending it to server
     }, 1000/60);
 
 
@@ -101,36 +106,40 @@ function initGame() {
     socket.on('update-world-state', function(data) {
       // Update each player from server data
       for (let id in data.players) {
-        // Currently placing full trust in client to their selfPlayer position
+        // Currently placing full trust in client to their selfPlayer position :O
         if (id != socket.id) players[id].setState(data.players[id]);
       }
 
       // Update each object from server data
       for (let id in data.objects) {
-        objects[id].setState(data.objects[id]);
+        objects[id].userData.setState(data.objects[id]);
       }
+
+      // Store any extra data server-room sends into the client-room
+      if (room.updateRoomData) {
+        room.updateRoomData(data);
+      }
+
     });
 
   });
 
 
-
-
-
+  /*
   // Adds object to room
   socket.on("object-added", function(objectData) {
     console.log("Object added: " + objectData);
 
     // Creation of the object automatically adds to scene and this declaration adds to objects dictionary
     objects[objectData.id] = new ObjectClass(objectData);
-  });
+  });*/
 
   // Adds object to room
   socket.on("object-removed", function(id) {
     console.log("Object removed: " + id);
 
-    // This function removes object from scene
-    objects[id].removeFromScene();
+    // Remove object from scene
+    scene.remove(objects[id]);
 
     // Delete object from objects dictionary
     delete objects[id];
@@ -139,20 +148,6 @@ function initGame() {
 
 
 }
-
-
-
-
-
-function updateGame(delta) {
-
-  // Doesnt really do anything anymore :/
-  // Will probably use it for something soon
-
-
-}
-
-
 
 
 

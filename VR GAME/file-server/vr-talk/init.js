@@ -106,7 +106,7 @@ function initVR(roomNum) {
     Room2,
     Room3,
     Room_Soccer,
-    Room5,
+    Room_Checkers,
     Room6
   ]
   room = new roomList[chosenRoom]();
@@ -133,6 +133,9 @@ function initVR(roomNum) {
   room.loadManager.onLoad = ()=>{
     console.log("==== Finished loading meshes for room ====")
     room.loadRoom();
+    initGame();
+    initRTC(chosenRoom);
+    beginAnimate();
   }
 
   // loadManager.onLoad will not trigger if it never needed to load a single resource
@@ -147,9 +150,6 @@ function initVR(roomNum) {
   // If no resources were needed, manually trigger the room.loadRoom function
   if (room.neededResources == false) room.loadManager.onLoad();
 
-
-  initGame();
-  initRTC(chosenRoom);
 }
 
 // This function is run once the room is loaded
@@ -179,11 +179,15 @@ function initRTC(channel) {
     setup_microphone(function() {
         /* once the user has given us access to their
          * microphone, join the channel and start peering up */
-        socket.emit("rtc_join", channel);
+        console.log(local_media_stream != undefined);
+        socket.emit("rtc_join", channel, local_media_stream != undefined);
     });
   });
 
   socket.on('add_rtc_peer', function(config) {
+    if (config.id == socket.id) {
+      return;
+    }
     console.log('Signaling server said to add peer:', config.id);
     var peer_id = config.id;
     if (peer_id in peers) {
@@ -215,6 +219,9 @@ function initRTC(channel) {
     }
     conn.onaddstream = function(event) {
       // Create a new PositionalAudio object using the client as the listener
+      if (peer_id == socket.id) {
+        return;
+      }
       console.log(selfPlayer);
       temp_sound = new Audio();
       temp_sound.srcObject = event.stream;
@@ -228,18 +235,14 @@ function initRTC(channel) {
 
       // Attach the audio source to the player object
       players[peer_id].playerGroup.add(sound);
-      // sound.play();
 
       peer_audio_objects[peer_id] = sound;
 
-      // var element = document.createElement("audio");
-      // element.autoplay = true;
-      // element.srcObject = event.stream;
-      // document.body.appendChild(element);
     }
 
     /* Add our local stream */
     if (local_media_stream) {
+      console.log("Setting the media stream for the description");
       conn.addStream(local_media_stream);
     }
 
@@ -282,7 +285,7 @@ function initRTC(channel) {
     var promise_chain = peer.setRemoteDescription(desc)
     .then(function() {
       if (remote_description.type == "offer") {
-        return peer.createAnswer(
+        peer.createAnswer(
           function(answer) {
             console.log(answer);
             peer.setLocalDescription(answer)
@@ -298,12 +301,12 @@ function initRTC(channel) {
           },
           function(err) {
             console.log("here" + err);
-        });
+          }
+        );
       }
     })
-    .catch(function(err) {});
+    .catch(console.log);
 
-    console.log("Set remoteDescription to " + peer.remoteDescription);
     console.log("Description from other peer is " + desc);
   });
 
@@ -390,13 +393,10 @@ function animate(timestamp) {
 	selfPlayer.veryOldState =selfPlayer.oldState
 	selfPlayer.oldState = selfPlayer.getCopyState();
 
-  //updateGame(delta);
-
   // Update player-specific code (movement, selection)
   selfPlayer.update(delta);
 
   // Performs local updates on room (objects only visible to local user like snow for example)
-  // The equivilant of the old animate1()...
   room.updateRoom();
 
   // Render the scene from selfPlayers camera view

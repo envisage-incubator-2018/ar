@@ -127,7 +127,6 @@ class Room_Music {
 		}
 
 
-		beginAnimate();
 	}
 	updateRoom() {
 
