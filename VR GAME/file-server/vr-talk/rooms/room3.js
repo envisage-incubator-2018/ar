@@ -71,7 +71,6 @@ class Room3 {
 		this.thingsThatCollide =[];
 		this.thingsThatCollide.push(this.testBound)
 
-		beginAnimate();
 	}
 	updateRoom() {
 		

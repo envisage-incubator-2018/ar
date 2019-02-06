@@ -88,12 +88,17 @@ function initGame() {
       objects[id] = createObject(data.objects[id]);
     }
 
+    if (room.initRoomData) {
+       room.initRoomData(data);
+    }
+
 
     // Now that user has world state, user begins updating
     // its own game state and sending it to server at a set tick rate
     setInterval(function() {
-      let userState = selfPlayer.getState();
-      socket.emit("update-state", userState);
+      let playerState = selfPlayer.getState();
+      socket.emit("update-state", playerState);
+      selfPlayer.playerData = {};   // Reset playerData after sending it to server
     }, 1000/60);
 
 
@@ -109,6 +114,12 @@ function initGame() {
       for (let id in data.objects) {
         objects[id].userData.setState(data.objects[id]);
       }
+
+      // Store any extra data server-room sends into the client-room
+      if (room.updateRoomData) {
+        room.updateRoomData(data);
+      }
+
     });
 
   });

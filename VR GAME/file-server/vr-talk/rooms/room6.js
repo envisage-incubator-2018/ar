@@ -68,7 +68,6 @@ class Room6 {
 		//add cube
 		scene.add( this.cube )
 		
-		beginAnimate();
 	}
 	updateRoom() {
 		//update collider positions

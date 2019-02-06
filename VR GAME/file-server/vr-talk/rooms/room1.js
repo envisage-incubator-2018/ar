@@ -181,7 +181,6 @@ class Room1 {
 		//Collision array
 		this.thingsThatCollide =[];
 
-		beginAnimate();
 	}
 	updateRoom() {
 		/*

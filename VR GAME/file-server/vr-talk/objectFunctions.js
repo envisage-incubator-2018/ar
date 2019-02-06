@@ -81,7 +81,14 @@ let objectFunctions = {
 	"teleportPlayer":(newPos)=>{
 		console.log("poof! you are teleported to", newPos);
 		selfPlayer.setPosition(newPos)
-	}
+	},
 
+
+	"selectPiece":piece=>{
+		room.selectPiece(piece)
+	},
+	"selectSquare":pos=>{
+		room.selectSquare(pos);
+	}
 }
 

@@ -134,7 +134,6 @@ class Room2 {
 
 
 
-		beginAnimate();
 	}
 	updateRoom() {
 		

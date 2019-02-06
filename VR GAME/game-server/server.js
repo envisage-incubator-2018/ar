@@ -23,8 +23,10 @@
 
 */
 
-
-
+// Listen on port 3000
+console.log("Starting server");
+io = require('socket.io').listen(3000);
+io.set("heartbeat interval", 1000);
 
 let Room_Empty = require("./room_empty.js");
 let Room_Blank = require("./room_blank.js");
@@ -37,13 +39,13 @@ let Room_Pong = require("./room_pong.js");
 // Players contain position/rotation information
 // Objects are objects in the room with position/rotation that is global to all players in that room
 let roomList = {
-	"room0": new Room_Empty(),
-	"room1": new Room_Blank(),
-	"room2": new Room_Blank(),
-	"room3": new Room_Pong(),
-	"room4": new Room_Soccer(),
-	"room5": new Room_Checkers(),
-	"room6": new Room_Blank()
+	"room0": new Room_Empty("room0"),
+	"room1": new Room_Blank("room1"),
+	"room2": new Room_Blank("room2"),
+	"room3": new Room_Pong("room3"),
+	"room4": new Room_Soccer("room4"),
+	"room5": new Room_Checkers("room5"),
+	"room6": new Room_Blank("room6")
 };
 
 // List of players with key as socket.id and values as room name string and rtc connection state
@@ -65,11 +67,7 @@ setInterval(function() {
 }, 3000);
 
 
-// Listen on port 3000
-let io = require('socket.io').listen(3000);
-io.set("heartbeat interval", 1000);
 
-console.log("Starting server");
 
 
 io.sockets.on('connection', function (socket) {
@@ -86,12 +84,12 @@ io.sockets.on('connection', function (socket) {
 		playerList[socket.id] = [roomName, false];
 
 		// Send world state to new player to allow them to start updating their own position
-		socket.emit('init-world-state', roomList[roomName].getRoomState());
+		roomList[roomName].initDataToPlayer(socket);
 
 		// Tells all users in room that a user connected
 		socket.to(roomName).emit("user-connected", socket.id);
 
-		// Wait for client to send their own state
+		// Wait for client to send their own state every client-tick
 		socket.on('update-state', function (playerData) {
 
 			// Set players updated position in room
@@ -183,6 +181,6 @@ setInterval(function() {
 		roomList[roomName].update();
 
 		// Send new room state to all players
-		io.to(roomName).emit('update-world-state', roomList[roomName].getRoomState());
+		roomList[roomName].sendDataToPlayers();
 	}
 }, 1000/60);

@@ -83,7 +83,6 @@ class Room_Soccer {
 		scene.add( this.wall4 )
 
 
-		beginAnimate();
 	}
 	updateRoom() {
 		

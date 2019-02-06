@@ -133,6 +133,9 @@ function initVR(roomNum) {
   room.loadManager.onLoad = ()=>{
     console.log("==== Finished loading meshes for room ====")
     room.loadRoom();
+    initGame();
+    initRTC(chosenRoom);
+    beginAnimate();
   }
 
   // loadManager.onLoad will not trigger if it never needed to load a single resource
@@ -147,9 +150,6 @@ function initVR(roomNum) {
   // If no resources were needed, manually trigger the room.loadRoom function
   if (room.neededResources == false) room.loadManager.onLoad();
 
-
-  initGame();
-  initRTC(chosenRoom);
 }
 
 // This function is run once the room is loaded
@@ -397,7 +397,6 @@ function animate(timestamp) {
   selfPlayer.update(delta);
 
   // Performs local updates on room (objects only visible to local user like snow for example)
-  // The equivilant of the old animate1()...
   room.updateRoom();
 
   // Render the scene from selfPlayers camera view
