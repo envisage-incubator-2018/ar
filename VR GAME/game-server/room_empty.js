@@ -1,25 +1,6 @@
 /*
 
-
-
-	Each room follows its own update function
-
-	A soccer room for example would analyse the position of players and update the position of a soccer ball
-
-	
-	Each room is stored as a class on the server
-	Everytime a player sends its state...
-		- a function is run in the room class with this data as the parameter
-		- this function updates the rooms stored version of the player
-	Each server tick...
-		- server sends the required information of each object to the player
-
-	Server can send a different init-world-state than update-world-state
-		- client will only start recieving update-world-state events after the init-world-state is fired
-		- init should contain extra information about object models for example
-			- also eventually could send world map? 
-			- might be able to send entire scenes since this message is only transmitted once and its size won't be an issue
-
+	An empty room with nothing but a floor and a directional light
 
 */
 
@@ -36,8 +17,7 @@ class Room_Empty {
 		
 		this.players = {};
 
-		this.objects = {
-		};
+		this.objects = {};
 
 
 	}

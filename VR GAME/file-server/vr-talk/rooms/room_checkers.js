@@ -68,8 +68,7 @@ class Room_Checkers {
 		scene.add( this.directionalLight2 );
 
 
-		// Adds starbox to scene
-		this.skyBox.position.y=5
+		// Adds skybox to scene
 		scene.add( this.skyBox )
 
 		// Add ground
@@ -92,8 +91,7 @@ class Room_Checkers {
 		this.checkersBoard.position.y = 0.25
 		scene.add( this.checkersBoard )
 
-		// Stores the currently selected piece
-		// Pieces range from 0 to 23, -1 means NO piece is selected
+		// Stores the currently selected piece as the THREE object itself
 		this.selectedPiece;	
 
 		// Multi-dimentional array of checkers board
@@ -116,7 +114,7 @@ class Room_Checkers {
 
 				square.position.set(
 					x - 3.5, 
-					0.501,
+					0.51,
 					y - 3.5
 				);
 

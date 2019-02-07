@@ -73,6 +73,16 @@ function initRTC(channel) {
 
       peer_audio_objects[peer_id] = sound;
 
+
+      // Hark.js used to track audio amplitude for this stream
+      players[peer_id].micStream = hark(event.stream, {});
+      players[peer_id].micStream.on("volume_change", volume=>{
+        let mouthScale = Math.max(volume+100, 0) / 100;
+        mouthScale -= 0.2;    // Minimum tends to be about 0.2 due to noise (just assume this is silence)
+        mouthScale = Math.max(mouthScale, 0.1);   // Closed mouth is atleast 0.1 wide
+        players[peer_id].mouthBox.scale.y = mouthScale;
+      });
+
     }
 
     /* Add our local stream */
@@ -197,6 +207,8 @@ function setup_microphone(callback) {
       // If user accepts microphone access, set the local_media_stream variable
       console.log("Access granted to microphone.");
       local_media_stream = stream;
+
+      selfPlayer.stream = stream;
 
       if (callback) callback();
     })

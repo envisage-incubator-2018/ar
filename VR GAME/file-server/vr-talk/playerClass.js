@@ -102,6 +102,17 @@ class PlayerClass {
 			this.plane.position.z = -3
 			this.camera.add(this.plane);
 
+		} else {	// If player is NOT client
+
+			// Create audio mouth
+			this.mouthHeight = 0.15;		// Maximum height of mouth
+			var mouthGeo = new THREE.BoxGeometry(0.3, this.mouthHeight, 0.01);
+			let mouthMat = new THREE.MeshLambertMaterial({color: "#ffffff"});
+			this.mouthBox = new THREE.Mesh(mouthGeo, mouthMat);
+			this.mouthBox.position.set(0, -0.1, -0.25);
+			this.mouthBox.scale.y = 0.1;	// Mouth is initially closed
+			this.playerGroup.add(this.mouthBox);
+
 		}
 
 	}
