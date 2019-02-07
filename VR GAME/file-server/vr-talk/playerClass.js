@@ -124,91 +124,7 @@ class PlayerClass {
 
 		} else {  // Move with keyboard controls
 
-			if (keyDown["KeyW"]) {
-
-				let moveVector = new THREE.Vector3();
-				this.camera.getWorldDirection(moveVector);
-
-				moveVector = moveVector.multiplyScalar(delta * this.movementSpeed);
-
-				this.playerGroup.position.add(moveVector);
-
-				this.movedForward = true;
-			}
-			if (keyDown["KeyS"]) {
-
-				let moveVector = new THREE.Vector3();
-				this.camera.getWorldDirection(moveVector);
-
-				moveVector = moveVector.multiplyScalar(delta * -this.movementSpeed);
-
-				this.playerGroup.position.add(moveVector);
-
-
-				this.movedBack=true;
-			}
-			if (keyDown["KeyA"]) {
-
-				let moveVector = new THREE.Vector3();
-				this.camera.getWorldDirection(moveVector);
-
-				// Rotate camera world direction by 90 degrees clockwise around y axis (turn right)
-				moveVector.applyAxisAngle(new THREE.Vector3(0,1,0), Math.PI/2)
-
-				moveVector = moveVector.multiplyScalar(delta * this.movementSpeed);
-				this.playerGroup.position.add(moveVector);
-
-				this.movedLeft=true;
-			}
-			if (keyDown["KeyD"]) {
-
-				let moveVector = new THREE.Vector3();
-				this.camera.getWorldDirection(moveVector);
-
-				// Rotate camera world direction by 90 degrees clockwise around y axis (turn right)
-				moveVector.applyAxisAngle(new THREE.Vector3(0,1,0), -Math.PI/2)
-
-				moveVector = moveVector.multiplyScalar(delta * this.movementSpeed);
-				this.playerGroup.position.add(moveVector);
-
-				this.movedRight=true;
-			}
-
-
-			if (keyDown["KeyE"]) {
-				this.playerGroup.rotateY( delta * -this.rotationSpeed );
-			}
-			if (keyDown["KeyQ"]) {
-				this.playerGroup.rotateY ( delta * this.rotationSpeed );
-			}
-			if (keyDown["KeyR"]) {
-				this.playerGroup.rotateX( delta * this.rotationSpeed );
-			}
-			if (keyDown["KeyF"]) {
-				this.playerGroup.rotateX( delta * -this.rotationSpeed );
-			}
-			if (keyDown["Space"]) {
-				this.playerGroup.translateY( delta * this.movementSpeed );
-			}
-			if (keyDown["KeyR"]) {
-				this.playerGroup.rotateX( delta * this.movementSpeed/2 );
-			}
-			if (keyDown["KeyF"]) {
-				this.playerGroup.rotateX( delta * -this.movementSpeed/2 );
-			}
-			if (keyDown["ShiftLeft"]) {
-				this.playerGroup.translateY( delta * -this.movementSpeed );
-			}
-			if (keyDown["KeyH"]) {
-
-				for (var i = 0; i < intersects.length; i++) {
-					//  if (intersects[i].object.position.y != 5) {
-					//     intersects[0].object.material.color.set(0xff0000);
-					//  }
-
-					console.log(intersects);
-				}
-			}
+			this.updateKeyInputs(delta);
 		}
 
 		//console.log(delta)
@@ -274,6 +190,80 @@ class PlayerClass {
 		scene.remove(this.playerGroup);
 	}
 
+	updateKeyInputs(delta) {
+
+		// Movement
+		if (keyDown["KeyW"]) {
+
+			let moveVector = new THREE.Vector3();
+			this.camera.getWorldDirection(moveVector);
+			moveVector = moveVector.multiplyScalar(delta * this.movementSpeed);
+			this.playerGroup.position.add(moveVector);
+
+			this.movedForward = true;
+		}
+		if (keyDown["KeyS"]) {
+
+			let moveVector = new THREE.Vector3();
+			this.camera.getWorldDirection(moveVector);
+			moveVector = moveVector.multiplyScalar(delta * -this.movementSpeed);
+			this.playerGroup.position.add(moveVector);
+
+			this.movedBack=true;
+		}
+		if (keyDown["KeyA"]) {
+
+			let moveVector = new THREE.Vector3();
+			this.camera.getWorldDirection(moveVector);
+
+			// Rotate camera world direction by 90 degrees clockwise around y axis (turn right)
+			moveVector.applyAxisAngle(new THREE.Vector3(0,1,0), Math.PI/2)
+
+			moveVector = moveVector.multiplyScalar(delta * this.movementSpeed);
+			this.playerGroup.position.add(moveVector);
+
+			this.movedLeft=true;
+		}
+		if (keyDown["KeyD"]) {
+
+			let moveVector = new THREE.Vector3();
+			this.camera.getWorldDirection(moveVector);
+
+			// Rotate camera world direction by 90 degrees clockwise around y axis (turn right)
+			moveVector.applyAxisAngle(new THREE.Vector3(0,1,0), -Math.PI/2)
+
+			moveVector = moveVector.multiplyScalar(delta * this.movementSpeed);
+			this.playerGroup.position.add(moveVector);
+
+			this.movedRight=true;
+		}
+		if (keyDown["Space"]) {
+			this.playerGroup.translateY( delta * this.movementSpeed );
+		}
+		if (keyDown["ShiftLeft"]) {
+			this.playerGroup.translateY( delta * -this.movementSpeed );
+		}
+
+		// Rotation
+		if (keyDown["KeyE"]) {
+			var q1 = new THREE.Quaternion();
+			q1.setFromAxisAngle(new THREE.Vector3(0, 1, 0), delta * -this.rotationSpeed);
+			this.playerGroup.quaternion.premultiply(q1);
+		}
+		if (keyDown["KeyQ"]) {
+			var q1 = new THREE.Quaternion();
+			q1.setFromAxisAngle(new THREE.Vector3(0, 1, 0), delta * this.rotationSpeed);
+			this.playerGroup.quaternion.premultiply(q1);
+		}
+		if (keyDown["KeyR"]) {
+			this.playerGroup.rotateX( delta * this.rotationSpeed );
+		}
+		if (keyDown["KeyF"]) {
+			this.playerGroup.rotateX( delta * -this.rotationSpeed );
+		}
+
+
+	}
 	updateGamepadInputs(delta) {
 		// Updates the gamepad axes by requesting them again
 		navigator.getGamepads()
